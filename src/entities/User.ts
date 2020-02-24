@@ -1,4 +1,10 @@
-import { Field, ID, InputType, ObjectType } from 'type-graphql';
+import {
+    Field,
+    ID,
+    InputType,
+    ObjectType,
+    registerEnumType,
+} from 'type-graphql';
 
 @ObjectType({ description: 'The user model' })
 export class User {
@@ -68,3 +74,19 @@ export class UserConnection {
     @Field()
     totalCount: Number;
 }
+
+export enum UserOrderByInput {
+    id_ASC = 'id_ASC',
+    id_DESC = 'id_DESC',
+    email_ASC = 'email_ASC',
+    email_DESC = 'email_DESC',
+    createdAt_ASC = 'createdAt_ASC',
+    createdAt_DESC = 'createdAt_DESC',
+    updatedAt_ASC = 'updatedAt_ASC',
+    updatedAt_DESC = 'updatedAt_DESC',
+}
+
+registerEnumType(UserOrderByInput, {
+    name: 'UserOrderByInput',
+    description: 'Filter order by input',
+});

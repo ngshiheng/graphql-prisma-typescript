@@ -5,6 +5,7 @@ import {
     AuthPayload,
     User,
     UserConnection,
+    UserOrderByInput,
     UserUpdateInput,
 } from '../entities/User';
 
@@ -20,8 +21,27 @@ export class UserResolvers {
     }
 
     @Query(() => UserConnection)
-    async users(@Ctx() { prisma }: any): Promise<UserConnection> {
-        const users = await prisma.usersConnection();
+    async users(
+        @Ctx() { prisma }: any,
+        @Arg('filter', { nullable: true }) filter: string,
+        @Arg('skip', { nullable: true }) skip: number,
+        @Arg('after', { nullable: true }) after: string,
+        @Arg('before', { nullable: true }) before: string,
+        @Arg('first', { nullable: true }) first: number,
+        @Arg('last', { nullable: true }) last: number,
+        @Arg('orderBy', () => UserOrderByInput, { nullable: true })
+        orderBy: UserOrderByInput,
+    ): Promise<UserConnection> {
+        const where = filter ? { OR: [{ email_contains: filter }] } : {};
+        const users = await prisma.usersConnection({
+            where,
+            skip,
+            after,
+            before,
+            first,
+            last,
+            orderBy,
+        });
         const totalCount = await prisma
             .usersConnection()
             .aggregate()
