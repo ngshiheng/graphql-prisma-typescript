@@ -448,6 +448,6 @@ export const models: Model[] = [
 export const Prisma = makePrismaClientClass<ClientConstructor<Prisma>>({
     typeDefs,
     models,
-    endpoint: `https://us1.prisma.sh/jerry-ng-9be71a/graphql-prisma-typescript/dev`,
+    endpoint: `${process.env['PRISMA_GQL_ENDPOINT']}`,
 });
 export const prisma = new Prisma();

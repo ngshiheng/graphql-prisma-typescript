@@ -1,0 +1,24 @@
+language: node_js
+
+node_js:
+    - 12
+
+services:
+    - docker
+
+cache: yarn
+
+script:
+    - yarn eslint
+    - yarn prettier
+    - docker-compose build
+    - docker images
+
+before_deploy:
+    - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
+
+deploy:
+    provider: script
+    script: docker-compose push
+    on:
+        branch: master

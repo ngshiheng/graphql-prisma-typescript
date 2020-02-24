@@ -1,0 +1,13 @@
+version: '3'
+services:
+    server:
+        container_name: graphql-prisma-typescript
+        environment:
+            - PRISMA_GQL_ENDPOINT=$PRISMA_GQL_ENDPOINT
+            - ENDPOINT=$ENDPOINT
+            - PORT=$PORT
+            - EXPIRY=$EXPIRY
+        restart: always
+        image: ${DOCKER_USERNAME}/graphql-prisma-typescript
+        ports:
+            - '$PORT:$PORT'
