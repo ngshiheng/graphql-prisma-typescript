@@ -21,6 +21,15 @@ A GraphQL, Prisma, NodeJS boilerplate with authentication setup
 
 # Usage
 
+## Setup environment variables
+
+```bash
+export PRISMA_QL_ENDPOINT="https://xxx.xxx.xxx"
+export ENDPOINT="/graphql"
+export PORT=4000
+export EXPIRY="12h"
+```
+
 ## Installing Prisma CLI
 
 ```bash

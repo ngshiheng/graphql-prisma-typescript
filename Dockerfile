@@ -1,13 +1,7 @@
 FROM node:12-alpine
-
 WORKDIR /server
-
-COPY package*.json /server/
-
-RUN npm ci
-
+COPY package.json yarn.lock ./
+RUN yarn install --frozen-lockfile
 COPY . /server/
-
 EXPOSE 4000
-
-CMD [ "npm", "start"]
+CMD [ "yarn", "start"]
