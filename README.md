@@ -28,6 +28,7 @@ A GraphQL, Prisma, NodeJS boilerplate with authentication setup
 export PRISMA_QL_ENDPOINT="https://xxx.xxx.xxx"
 export ENDPOINT="/graphql"
 export PORT=4000
+export SECRET="my-app-secret"
 export EXPIRY="12h"
 ```
 

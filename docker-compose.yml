@@ -6,6 +6,7 @@ services:
             - PRISMA_GQL_ENDPOINT=$PRISMA_GQL_ENDPOINT
             - ENDPOINT=$ENDPOINT
             - PORT=$PORT
+            - SECRET=$SECRET
             - EXPIRY=$EXPIRY
         restart: always
         image: ${DOCKER_USERNAME}/graphql-prisma-typescript
