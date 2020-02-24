@@ -45,7 +45,7 @@ const main = async () => {
 
     server.start(options, () =>
         console.log(
-            `🚀  Server is running on http://localhost:${process.env.PORT}${process.env.ENDPOINT}`,
+            `🚀 Server is running on http://localhost:${process.env.PORT}${process.env.ENDPOINT}`,
         ),
     );
 };

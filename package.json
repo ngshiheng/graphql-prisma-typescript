@@ -2,7 +2,7 @@
     "name": "graphql-prisma-typescript",
     "version": "1.0.0",
     "description": "A GraphQL, Prisma, TypeScript server boilerplate",
-    "main": "index.js",
+    "main": "index.ts",
     "author": "Jerry Ng <ngshiheng@gmail.com>",
     "license": "MIT",
     "private": false,
