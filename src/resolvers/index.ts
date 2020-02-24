@@ -1,6 +1,7 @@
 import { compare, hash } from 'bcryptjs';
+import { Context } from 'graphql-yoga/dist/types';
 import { sign } from 'jsonwebtoken';
-import { Arg, Ctx, Mutation, Query, Resolver } from 'type-graphql';
+import { Arg, Ctx, Int, Mutation, Query, Resolver } from 'type-graphql';
 import {
     AuthPayload,
     User,
@@ -12,7 +13,10 @@ import {
 @Resolver()
 export class UserResolvers {
     @Query(() => User)
-    async user(@Ctx() { prisma }: any, @Arg('id') id: string): Promise<User> {
+    async user(
+        @Ctx() { prisma }: Context,
+        @Arg('id') id: string,
+    ): Promise<User> {
         const user = await prisma.user({ id });
         if (!user) {
             throw new Error('User does not exist');
@@ -22,13 +26,13 @@ export class UserResolvers {
 
     @Query(() => UserConnection)
     async users(
-        @Ctx() { prisma }: any,
+        @Ctx() { prisma }: Context,
         @Arg('filter', { nullable: true }) filter: string,
-        @Arg('skip', { nullable: true }) skip: number,
+        @Arg('skip', () => Int, { nullable: true }) skip: number,
         @Arg('after', { nullable: true }) after: string,
         @Arg('before', { nullable: true }) before: string,
-        @Arg('first', { nullable: true }) first: number,
-        @Arg('last', { nullable: true }) last: number,
+        @Arg('first', () => Int, { nullable: true }) first: number,
+        @Arg('last', () => Int, { nullable: true }) last: number,
         @Arg('orderBy', () => UserOrderByInput, { nullable: true })
         orderBy: UserOrderByInput,
     ): Promise<UserConnection> {
@@ -56,7 +60,7 @@ export class UserResolvers {
 
     @Mutation(() => AuthPayload)
     async register(
-        @Ctx() { prisma }: any,
+        @Ctx() { prisma }: Context,
         @Arg('email') email: string,
         @Arg('password') password: string,
     ): Promise<AuthPayload> {
@@ -80,7 +84,7 @@ export class UserResolvers {
 
     @Mutation(() => AuthPayload)
     async login(
-        @Ctx() { prisma }: any,
+        @Ctx() { prisma }: Context,
         @Arg('email') email: string,
         @Arg('password') password: string,
     ): Promise<AuthPayload> {
@@ -103,7 +107,7 @@ export class UserResolvers {
 
     @Mutation(() => User)
     async updateUser(
-        @Ctx() { prisma }: any,
+        @Ctx() { prisma }: Context,
         @Arg('id') id: string,
         @Arg('input') { email }: UserUpdateInput,
     ): Promise<User> {
@@ -119,7 +123,7 @@ export class UserResolvers {
 
     @Mutation(() => User)
     async deleteUser(
-        @Ctx() { prisma }: any,
+        @Ctx() { prisma }: Context,
         @Arg('id') id: string,
     ): Promise<User> {
         const user = await prisma.user({ id });
