@@ -9,6 +9,7 @@ services:
             - SECRET=$SECRET
             - EXPIRY=$EXPIRY
         restart: always
+        build: ./
         image: ${DOCKER_USERNAME}/graphql-prisma-typescript
         ports:
             - '$PORT:$PORT'
