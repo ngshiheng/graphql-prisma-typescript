@@ -8,6 +8,7 @@
 
 <br />
 
+[![Build Status](https://travis-ci.org/ngshiheng/graphql-prisma-typescript.svg?branch=master)](https://travis-ci.org/ngshiheng/graphql-prisma-typescript)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/ngshiheng/graphql-prisma-typescript/blob/master/LICENSE)
 
 A GraphQL, Prisma, NodeJS boilerplate with authentication setup
@@ -20,6 +21,15 @@ A GraphQL, Prisma, NodeJS boilerplate with authentication setup
 -   [typescript](https://www.typescriptlang.org/)
 
 # Usage
+
+## Setup environment variables
+
+```bash
+export PRISMA_QL_ENDPOINT="https://xxx.xxx.xxx"
+export ENDPOINT="/graphql"
+export PORT=4000
+export EXPIRY="12h"
+```
 
 ## Installing Prisma CLI
 

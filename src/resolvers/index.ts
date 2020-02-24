@@ -10,6 +10,8 @@ import {
     UserUpdateInput,
 } from '../entities/User';
 
+const APP_SECRET: string = process.env.SECRET!;
+
 @Resolver()
 export class UserResolvers {
     @Query(() => User)
@@ -73,7 +75,7 @@ export class UserResolvers {
             email,
             password: hashedPassword,
         });
-        const token = sign({ userId: user.id }, 'my-little-secret', {
+        const token = sign({ userId: user.id }, APP_SECRET, {
             expiresIn: process.env.EXPIRY,
         });
         return {
@@ -96,7 +98,7 @@ export class UserResolvers {
         if (!isPasswordValid) {
             throw new Error('Incorrect password');
         }
-        const token = sign({ userId: user.id }, 'my-little-secret', {
+        const token = sign({ userId: user.id }, APP_SECRET, {
             expiresIn: process.env.EXPIRY,
         });
         return {
