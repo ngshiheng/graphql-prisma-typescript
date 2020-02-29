@@ -41,10 +41,10 @@ export class PostCreateInput {
 @InputType({ description: 'Post update inputs' })
 export class PostUpdateInput {
     @Field({ nullable: true })
-    title: string;
+    title?: string;
 
     @Field(() => Category, { nullable: true })
-    category: Category;
+    category?: Category;
 }
 
 @ObjectType({ description: 'Connections between nodes' })

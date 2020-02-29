@@ -440,7 +440,6 @@ export const typeDefs = /* GraphQL */ `
     enum UserRole {
         ADMIN
         USER
-        VISITOR
     }
 
     type UserSubscriptionPayload {

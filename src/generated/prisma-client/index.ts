@@ -142,7 +142,7 @@ export interface ClientConstructor<T> {
 
 export type Category = 'SPORT' | 'FINANCE' | 'TECHNOLOGY' | 'OTHER';
 
-export type UserRole = 'ADMIN' | 'USER' | 'VISITOR';
+export type UserRole = 'ADMIN' | 'USER';
 
 export type PostOrderByInput =
     | 'id_ASC'

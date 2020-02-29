@@ -1,7 +1,15 @@
 import { compare, hash } from 'bcryptjs';
 import { Context } from 'graphql-yoga/dist/types';
 import { sign } from 'jsonwebtoken';
-import { Arg, Ctx, Int, Mutation, Query, Resolver } from 'type-graphql';
+import {
+    Arg,
+    Authorized,
+    Ctx,
+    Int,
+    Mutation,
+    Query,
+    Resolver,
+} from 'type-graphql';
 import {
     AuthPayload,
     User,
@@ -10,23 +18,24 @@ import {
     UserOrderByInput,
     UserUpdateInput,
 } from '../entities/User.entity';
-
-const APP_SECRET: string = process.env.SECRET!;
+import { APP_SECRET, TOKEN_EXPIRY } from '../utils/constants';
 
 @Resolver()
 export class UserResolvers {
+    @Authorized('USER')
     @Query(() => User)
     async user(
         @Ctx() { prisma }: Context,
         @Arg('id') id: string,
     ): Promise<User> {
-        const user = await prisma.user({ id });
+        const user = await prisma.user({ id }).posts();
         if (!user) {
             throw new Error('User does not exist');
         }
         return user;
     }
 
+    @Authorized('USER')
     @Query(() => UserConnection)
     async users(
         @Ctx() { prisma }: Context,
@@ -61,11 +70,12 @@ export class UserResolvers {
         };
     }
 
+    @Authorized('ADMIN')
     @Mutation(() => AuthPayload)
     async createUser(
         @Ctx() { prisma }: Context,
         @Arg('input', () => UserCreateInput)
-        { name, email, password, role }: UserCreateInput,
+        { email, password, role, name }: UserCreateInput,
     ): Promise<AuthPayload> {
         const userEmail = await prisma.user({ email });
         if (userEmail) {
@@ -74,12 +84,12 @@ export class UserResolvers {
         const hashedPassword = await hash(password, 10);
         const user = await prisma.createUser({
             name,
+            role,
             email,
             password: hashedPassword,
-            role,
         });
-        const token = sign({ userId: user.id }, APP_SECRET, {
-            expiresIn: process.env.EXPIRY,
+        const token = sign({ userId: user.id, role: user.role }, APP_SECRET, {
+            expiresIn: TOKEN_EXPIRY,
         });
         return {
             user,
@@ -104,8 +114,8 @@ export class UserResolvers {
             email,
             password: hashedPassword,
         });
-        const token = sign({ userId: user.id }, APP_SECRET, {
-            expiresIn: process.env.EXPIRY,
+        const token = sign({ userId: user.id, role: user.role }, APP_SECRET, {
+            expiresIn: TOKEN_EXPIRY,
         });
         return {
             user,
@@ -127,8 +137,8 @@ export class UserResolvers {
         if (!isPasswordValid) {
             throw new Error('Incorrect password');
         }
-        const token = sign({ userId: user.id }, APP_SECRET, {
-            expiresIn: process.env.EXPIRY,
+        const token: any = sign({ userId: user.id }, APP_SECRET, {
+            expiresIn: TOKEN_EXPIRY,
         });
         return {
             token,
@@ -136,6 +146,7 @@ export class UserResolvers {
         };
     }
 
+    @Authorized('OWNER')
     @Mutation(() => User)
     async updateUser(
         @Ctx() { prisma }: Context,
@@ -152,6 +163,7 @@ export class UserResolvers {
         });
     }
 
+    @Authorized('OWNER')
     @Mutation(() => User)
     async deleteUser(
         @Ctx() { prisma }: Context,

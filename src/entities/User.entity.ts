@@ -47,13 +47,13 @@ export class AuthPayload {
 @InputType({ description: 'User creation inputs' })
 export class UserCreateInput {
     @Field()
-    name: string;
-
-    @Field()
     email: string;
 
     @Field()
     password: string;
+
+    @Field({ nullable: true })
+    name?: string;
 
     @Field(() => UserRole)
     role: UserRole;
@@ -62,10 +62,10 @@ export class UserCreateInput {
 @InputType({ description: 'User update inputs' })
 export class UserUpdateInput {
     @Field({ nullable: true })
-    name: string;
+    name?: string;
 
     @Field({ nullable: true })
-    email: string;
+    email?: string;
 }
 
 @ObjectType({ description: 'Connections between nodes' })
@@ -92,7 +92,6 @@ export class UserConnection {
 export enum UserRole {
     ADMIN = 'ADMIN',
     USER = 'USER',
-    VISITOR = 'VISITOR',
 }
 
 registerEnumType(UserRole, {

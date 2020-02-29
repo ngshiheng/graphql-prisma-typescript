@@ -1,6 +1,7 @@
 import { GraphQLServer } from 'graphql-yoga';
 import 'reflect-metadata';
 import { buildSchema } from 'type-graphql';
+import { authenticationChecker } from './authentication/authenticate';
 import { prisma } from './generated/prisma-client';
 import { PostResolvers } from './resolvers/Post.resolver';
 import { UserResolvers } from './resolvers/User.resolver';
@@ -24,6 +25,7 @@ mutation {
 const main = async () => {
     const schema = await buildSchema({
         resolvers: [UserResolvers, PostResolvers],
+        authChecker: authenticationChecker,
         emitSchemaFile: path.resolve(__dirname, 'schema/schema.gql'),
     });
 

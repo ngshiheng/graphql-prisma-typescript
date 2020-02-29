@@ -1,10 +1,12 @@
 import { Context } from 'graphql-yoga/dist/types';
-import { Arg, Ctx, Mutation, Query, Resolver } from 'type-graphql';
+import { verify } from 'jsonwebtoken';
+import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 import {
     Post,
     PostCreateInput,
     PostUpdateInput,
 } from '../entities/Post.entity';
+import { APP_SECRET } from '../utils/constants';
 
 @Resolver()
 export class PostResolvers {
@@ -13,21 +15,30 @@ export class PostResolvers {
         @Ctx() { prisma }: Context,
         @Arg('id') id: string,
     ): Promise<Post> {
-        const post = await prisma.post({ id });
-        if (!post) {
-            throw new Error('Post does not exist');
-        }
-        return post;
+        return await prisma.post({ id });
     }
 
+    @Authorized('USER')
     @Mutation(() => Post)
     async createPost(
-        @Ctx() { prisma }: Context,
-        @Arg('input', () => PostCreateInput) input: PostCreateInput,
+        @Ctx() { prisma, request }: Context,
+        @Arg('input', () => PostCreateInput)
+        { title, category }: PostCreateInput,
     ): Promise<Post> {
-        return prisma.createPost({ ...input });
+        const getAuthHeader = request.get('Authorization');
+        if (getAuthHeader) {
+            const token = getAuthHeader.replace('Bearer ', '');
+            const { userId }: any = verify(token, APP_SECRET);
+            return await prisma.createPost({
+                author: { connect: { id: userId } },
+                title,
+                category,
+            });
+        }
+        throw new Error('You need to register for an account first');
     }
 
+    @Authorized('OWNER')
     @Mutation(() => Post)
     async updatePost(
         @Arg('id') id: string,
@@ -44,6 +55,7 @@ export class PostResolvers {
         });
     }
 
+    @Authorized('OWNER')
     @Mutation(() => Post)
     async deletePost(
         @Ctx() { prisma }: Context,

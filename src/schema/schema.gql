@@ -134,9 +134,9 @@ type UserConnection {
 
 """User creation inputs"""
 input UserCreateInput {
-  name: String!
   email: String!
   password: String!
+  name: String
   role: UserRole!
 }
 
@@ -167,7 +167,6 @@ enum UserOrderByInput {
 enum UserRole {
   ADMIN
   USER
-  VISITOR
 }
 
 """User update inputs"""
