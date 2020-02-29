@@ -1,14 +1,26 @@
 import { Context } from 'graphql-yoga/dist/types';
 import { verify } from 'jsonwebtoken';
-import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
+import {
+    Arg,
+    Authorized,
+    Ctx,
+    FieldResolver,
+    Int,
+    Mutation,
+    Query,
+    Resolver,
+    Root,
+} from 'type-graphql';
 import {
     Post,
+    PostConnection,
     PostCreateInput,
+    PostOrderByInput,
     PostUpdateInput,
 } from '../entities/Post.entity';
 import { APP_SECRET } from '../utils/constants';
 
-@Resolver()
+@Resolver(() => Post)
 export class PostResolvers {
     @Query(() => Post)
     async post(
@@ -16,6 +28,40 @@ export class PostResolvers {
         @Arg('id') id: string,
     ): Promise<Post> {
         return await prisma.post({ id });
+    }
+
+    @Query(() => PostConnection)
+    async posts(
+        @Ctx() { prisma }: Context,
+        @Arg('filter', { nullable: true }) filter: string,
+        @Arg('skip', () => Int, { nullable: true }) skip: number,
+        @Arg('after', { nullable: true }) after: string,
+        @Arg('before', { nullable: true }) before: string,
+        @Arg('first', () => Int, { nullable: true }) first: number,
+        @Arg('last', () => Int, { nullable: true }) last: number,
+        @Arg('orderBy', () => PostOrderByInput, { nullable: true })
+        orderBy: PostOrderByInput,
+    ): Promise<PostConnection> {
+        const where = filter ? { OR: [{ title_contains: filter }] } : {};
+        const posts = await prisma.postsConnection({
+            where,
+            skip,
+            after,
+            before,
+            first,
+            last,
+            orderBy,
+        });
+        const totalCount = await prisma
+            .postsConnection()
+            .aggregate()
+            .count();
+
+        return {
+            edges: posts.edges,
+            pageInfo: posts.pageInfo,
+            totalCount,
+        };
     }
 
     @Authorized('USER')
@@ -66,5 +112,13 @@ export class PostResolvers {
             throw new Error('Post does not exist');
         }
         return await prisma.deletePost({ id });
+    }
+
+    @FieldResolver()
+    async author(
+        @Ctx() { prisma }: Context,
+        @Root() { id }: Post,
+    ): Promise<Post> {
+        return prisma.post({ id }).author();
     }
 }

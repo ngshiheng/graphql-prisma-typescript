@@ -87,6 +87,18 @@ type PostEdge {
   cursor: String!
 }
 
+"""Filter order by input"""
+enum PostOrderByInput {
+  id_ASC
+  id_DESC
+  title_ASC
+  title_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
 """Post update inputs"""
 input PostUpdateInput {
   title: String
@@ -95,6 +107,7 @@ input PostUpdateInput {
 
 type Query {
   post(id: String!): Post!
+  posts(orderBy: PostOrderByInput, last: Int, first: Int, before: String, after: String, skip: Int, filter: String): PostConnection!
   user(id: String!): User!
   users(orderBy: UserOrderByInput, last: Int, first: Int, before: String, after: String, skip: Int, filter: String): UserConnection!
 }

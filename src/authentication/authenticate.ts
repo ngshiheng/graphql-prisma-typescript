@@ -11,11 +11,9 @@ export const authenticationChecker: AuthChecker = (
     if (getAuthHeader) {
         const token = getAuthHeader.replace('Bearer ', '');
         const { userId, role }: any = verify(token, APP_SECRET);
-
         if (roles.includes('OWNER')) {
             return args.id === userId || role === 'ADMIN';
         }
-
         switch (role) {
             case 'ADMIN':
                 return true;

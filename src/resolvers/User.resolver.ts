@@ -5,10 +5,12 @@ import {
     Arg,
     Authorized,
     Ctx,
+    FieldResolver,
     Int,
     Mutation,
     Query,
     Resolver,
+    Root,
 } from 'type-graphql';
 import {
     AuthPayload,
@@ -20,7 +22,7 @@ import {
 } from '../entities/User.entity';
 import { APP_SECRET, TOKEN_EXPIRY } from '../utils/constants';
 
-@Resolver()
+@Resolver(() => User)
 export class UserResolvers {
     @Authorized('USER')
     @Query(() => User)
@@ -137,7 +139,7 @@ export class UserResolvers {
         if (!isPasswordValid) {
             throw new Error('Incorrect password');
         }
-        const token: any = sign({ userId: user.id }, APP_SECRET, {
+        const token = sign({ userId: user.id, role: user.role }, APP_SECRET, {
             expiresIn: TOKEN_EXPIRY,
         });
         return {
@@ -174,5 +176,13 @@ export class UserResolvers {
             throw new Error('User does not exist');
         }
         return await prisma.deleteUser({ id });
+    }
+
+    @FieldResolver()
+    async posts(
+        @Ctx() { prisma }: Context,
+        @Root() { id }: User,
+    ): Promise<User> {
+        return prisma.user({ id }).posts();
     }
 }
