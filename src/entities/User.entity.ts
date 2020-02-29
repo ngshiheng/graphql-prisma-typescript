@@ -45,7 +45,7 @@ export class AuthPayload {
 }
 
 @InputType({ description: 'User creation inputs' })
-export class UserCreateInput {
+export class UserCreateInput implements Partial<User> {
     @Field()
     email: string;
 
@@ -60,7 +60,7 @@ export class UserCreateInput {
 }
 
 @InputType({ description: 'User update inputs' })
-export class UserUpdateInput {
+export class UserUpdateInput implements Partial<User> {
     @Field({ nullable: true })
     name?: string;
 
@@ -86,7 +86,7 @@ export class UserConnection {
     pageInfo: PageInfo;
 
     @Field()
-    totalCount: Number;
+    totalCount: number;
 }
 
 export enum UserRole {

@@ -1,6 +1,7 @@
 import { compare, hash } from 'bcryptjs';
 import { Context } from 'graphql-yoga/dist/types';
 import { sign } from 'jsonwebtoken';
+import { Post } from 'src/entities/Post.entity';
 import {
     Arg,
     Authorized,
@@ -10,6 +11,7 @@ import {
     Mutation,
     Query,
     Resolver,
+    ResolverInterface,
     Root,
 } from 'type-graphql';
 import {
@@ -23,7 +25,7 @@ import {
 import { APP_SECRET, TOKEN_EXPIRY } from '../utils/constants';
 
 @Resolver(() => User)
-export class UserResolvers {
+export class UserResolvers implements ResolverInterface<User> {
     @Authorized('USER')
     @Query(() => User)
     async user(
@@ -182,7 +184,7 @@ export class UserResolvers {
     async posts(
         @Ctx() { prisma }: Context,
         @Root() { id }: User,
-    ): Promise<User> {
+    ): Promise<[Post]> {
         return prisma.user({ id }).posts();
     }
 }

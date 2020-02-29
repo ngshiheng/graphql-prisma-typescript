@@ -1,5 +1,6 @@
 import { Context } from 'graphql-yoga/dist/types';
 import { verify } from 'jsonwebtoken';
+import { User } from 'src/entities/User.entity';
 import {
     Arg,
     Authorized,
@@ -9,6 +10,7 @@ import {
     Mutation,
     Query,
     Resolver,
+    ResolverInterface,
     Root,
 } from 'type-graphql';
 import {
@@ -21,13 +23,17 @@ import {
 import { APP_SECRET } from '../utils/constants';
 
 @Resolver(() => Post)
-export class PostResolvers {
+export class PostResolvers implements ResolverInterface<Post> {
     @Query(() => Post)
     async post(
         @Ctx() { prisma }: Context,
         @Arg('id') id: string,
     ): Promise<Post> {
-        return await prisma.post({ id });
+        const post = await prisma.post({ id });
+        if (!post) {
+            throw new Error('Post does not exist');
+        }
+        return post;
     }
 
     @Query(() => PostConnection)
@@ -118,7 +124,7 @@ export class PostResolvers {
     async author(
         @Ctx() { prisma }: Context,
         @Root() { id }: Post,
-    ): Promise<Post> {
+    ): Promise<User> {
         return prisma.post({ id }).author();
     }
 }

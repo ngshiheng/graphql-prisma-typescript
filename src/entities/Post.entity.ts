@@ -17,7 +17,7 @@ export class Post {
     title: string;
 
     @Field(() => Category, { description: 'Category of the post' })
-    category: string;
+    category: Category;
 
     @Field({ description: 'Author of the post' })
     author: User;
@@ -30,7 +30,7 @@ export class Post {
 }
 
 @InputType({ description: 'Post creation inputs' })
-export class PostCreateInput {
+export class PostCreateInput implements Partial<Post> {
     @Field()
     title: string;
 
@@ -39,7 +39,7 @@ export class PostCreateInput {
 }
 
 @InputType({ description: 'Post update inputs' })
-export class PostUpdateInput {
+export class PostUpdateInput implements Partial<Post> {
     @Field({ nullable: true })
     title?: string;
 
@@ -65,7 +65,7 @@ export class PostConnection {
     pageInfo: PageInfo;
 
     @Field()
-    totalCount: Number;
+    totalCount: number;
 }
 
 export enum Category {
