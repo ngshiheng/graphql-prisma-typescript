@@ -6,20 +6,20 @@ import { PostResolvers } from './resolvers/Post.resolver';
 import { UserResolvers } from './resolvers/User.resolver';
 import path = require('path');
 
-// const defaultLoginQuery = `# Enter your email and password to login to receive your access token
-// mutation {
-//     login(email: "", password: "") {
-//         token
-//         user {
-//             id
-//         }
-//     }
-// }
+const defaultLoginQuery = `# Enter your email and password to login to receive your access token
+mutation {
+    login(email: "", password: "") {
+        token
+        user {
+            id
+        }
+    }
+}
 
-// # Replace <paste access token here> with your access token
-// # Paste the authorization header below in the 'HTTP HEADERS' tab at the bottom of the page for all your requests
-// # { "Authorization": "Bearer <paste access token here>" }
-// `;
+# Replace <paste access token here> with your access token
+# Paste the authorization header below in the 'HTTP HEADERS' tab at the bottom of the page for all your requests
+# { "Authorization": "Bearer <paste access token here>" }
+`;
 
 const main = async () => {
     const schema = await buildSchema({
@@ -41,7 +41,7 @@ const main = async () => {
         port: process.env.PORT,
         endpoint: process.env.ENDPOINT,
         playground: process.env.ENDPOINT,
-        // defaultPlaygroundQuery: defaultLoginQuery,
+        defaultPlaygroundQuery: defaultLoginQuery,
     };
 
     server.start(options, () =>
