@@ -3,45 +3,126 @@
 # !!!   DO NOT MODIFY THIS FILE BY YOURSELF   !!!
 # -----------------------------------------------
 
+"""Authentication payload model"""
 type AuthPayload {
+  """Token that expires after a certain period of time"""
   token: String!
+
+  """User model"""
   user: User!
 }
 
 type Mutation {
-  register(password: String!, email: String!): AuthPayload!
+  createPost(input: PostCreateInput!): Post!
+  updatePost(input: PostUpdateInput!, id: String!): Post!
+  deletePost(id: String!): Post!
+  createUser(input: UserCreateInput!): AuthPayload!
+  register(email: String!, password: String!, name: String): AuthPayload!
   login(password: String!, email: String!): AuthPayload!
   updateUser(input: UserUpdateInput!, id: String!): User!
   deleteUser(id: String!): User!
 }
 
 type PageInfo {
+  """Check if the current query has next page"""
   hasNextPage: Boolean!
+
+  """Check if the current query has previous page"""
   hasPreviousPage: Boolean!
+
+  """ID of the first object of the current page"""
   startCursor: String!
+
+  """ID of the last object of the current page"""
   endCursor: String!
 }
 
+"""Post model"""
+type Post {
+  """Unique ID of the post"""
+  id: ID!
+
+  """Title of the post"""
+  title: String!
+
+  """Category of the post"""
+  category: PostCategory!
+
+  """Author of the post"""
+  author: User!
+
+  """Date of which the post is created"""
+  createdAt: String!
+
+  """Date of which the post is last updated"""
+  updatedAt: String!
+}
+
+"""Categories available for the post"""
+enum PostCategory {
+  SPORT
+  FINANCE
+  TECHNOLOGY
+  OTHER
+}
+
+type PostConnection {
+  edges: [PostEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Float!
+}
+
+"""Post creation inputs"""
+input PostCreateInput {
+  title: String!
+  category: PostCategory!
+}
+
+"""Connections between nodes"""
+type PostEdge {
+  """Data of the Post object"""
+  node: Post!
+
+  """Cursor used for posts pagination"""
+  cursor: String!
+}
+
+"""Post update inputs"""
+input PostUpdateInput {
+  title: String
+  category: PostCategory
+}
+
 type Query {
+  post(id: String!): Post!
   user(id: String!): User!
   users(orderBy: UserOrderByInput, last: Int, first: Int, before: String, after: String, skip: Int, filter: String): UserConnection!
 }
 
-"""The user model"""
+"""User model"""
 type User {
-  """The unique ID of the user """
+  """Unique ID of the user"""
   id: ID!
 
-  """The email of the user"""
+  """Name of the user"""
+  name: String
+
+  """Email of the user"""
   email: String!
 
-  """The email of the user"""
+  """Password of the user"""
   password: String!
 
-  """The date which of the user is created"""
+  """Role of the user"""
+  role: UserRole!
+
+  """Posts authored by the user"""
+  posts: [Post!]!
+
+  """Date of which the user is created"""
   createdAt: String!
 
-  """The date which of the user is last updated"""
+  """Date of which the user is last updated"""
   updatedAt: String!
 }
 
@@ -51,8 +132,20 @@ type UserConnection {
   totalCount: Float!
 }
 
+"""User creation inputs"""
+input UserCreateInput {
+  name: String!
+  email: String!
+  password: String!
+  role: UserRole!
+}
+
+"""Connections between nodes"""
 type UserEdge {
+  """Data of the User object"""
   node: User!
+
+  """Cursor used for users pagination"""
   cursor: String!
 }
 
@@ -60,6 +153,8 @@ type UserEdge {
 enum UserOrderByInput {
   id_ASC
   id_DESC
+  name_ASC
+  name_DESC
   email_ASC
   email_DESC
   createdAt_ASC
@@ -68,6 +163,15 @@ enum UserOrderByInput {
   updatedAt_DESC
 }
 
+"""Roles available for users"""
+enum UserRole {
+  ADMIN
+  USER
+  VISITOR
+}
+
+"""User update inputs"""
 input UserUpdateInput {
-  email: String!
+  name: String
+  email: String
 }

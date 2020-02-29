@@ -1,6 +1,8 @@
 endpoint: ${env:PRISMA_GQL_ENDPOINT}
 
-datamodel: datamodel.prisma
+datamodel:
+    - user.prisma
+    - post.prisma
 
 generate:
     - generator: typescript-client

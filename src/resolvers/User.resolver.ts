@@ -6,9 +6,10 @@ import {
     AuthPayload,
     User,
     UserConnection,
+    UserCreateInput,
     UserOrderByInput,
     UserUpdateInput,
-} from '../entities/User';
+} from '../entities/User.entity';
 
 const APP_SECRET: string = process.env.SECRET!;
 
@@ -61,10 +62,10 @@ export class UserResolvers {
     }
 
     @Mutation(() => AuthPayload)
-    async register(
+    async createUser(
         @Ctx() { prisma }: Context,
-        @Arg('email') email: string,
-        @Arg('password') password: string,
+        @Arg('input', () => UserCreateInput)
+        { name, email, password, role }: UserCreateInput,
     ): Promise<AuthPayload> {
         const userEmail = await prisma.user({ email });
         if (userEmail) {
@@ -72,6 +73,34 @@ export class UserResolvers {
         }
         const hashedPassword = await hash(password, 10);
         const user = await prisma.createUser({
+            name,
+            email,
+            password: hashedPassword,
+            role,
+        });
+        const token = sign({ userId: user.id }, APP_SECRET, {
+            expiresIn: process.env.EXPIRY,
+        });
+        return {
+            user,
+            token,
+        };
+    }
+
+    @Mutation(() => AuthPayload)
+    async register(
+        @Ctx() { prisma }: Context,
+        @Arg('name', { nullable: true }) name: string,
+        @Arg('password') password: string,
+        @Arg('email') email: string,
+    ): Promise<AuthPayload> {
+        const userEmail = await prisma.user({ email });
+        if (userEmail) {
+            throw new Error('Email is already registered');
+        }
+        const hashedPassword = await hash(password, 10);
+        const user = await prisma.createUser({
+            name,
             email,
             password: hashedPassword,
         });
@@ -111,7 +140,7 @@ export class UserResolvers {
     async updateUser(
         @Ctx() { prisma }: Context,
         @Arg('id') id: string,
-        @Arg('input') { email }: UserUpdateInput,
+        @Arg('input') input: UserUpdateInput,
     ): Promise<User> {
         const user = await prisma.user({ id });
         if (!user) {
@@ -119,7 +148,7 @@ export class UserResolvers {
         }
         return await prisma.updateUser({
             where: { id },
-            data: { email },
+            data: { ...input },
         });
     }
 
