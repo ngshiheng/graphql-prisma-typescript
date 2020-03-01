@@ -1,7 +1,6 @@
 import { compare, hash } from 'bcryptjs';
 import { Context } from 'graphql-yoga/dist/types';
 import { sign } from 'jsonwebtoken';
-import { Post } from 'src/entities/Post.entity';
 import {
     Arg,
     Authorized,
@@ -14,6 +13,7 @@ import {
     ResolverInterface,
     Root,
 } from 'type-graphql';
+import { PostConnection, PostOrderByInput } from '../entities/Post.entity';
 import {
     AuthPayload,
     User,
@@ -61,7 +61,7 @@ export class UserResolvers implements ResolverInterface<User> {
             orderBy,
         });
         const totalCount = await prisma
-            .usersConnection()
+            .usersConnection({ where })
             .aggregate()
             .count();
 
@@ -182,7 +182,36 @@ export class UserResolvers implements ResolverInterface<User> {
     async posts(
         @Ctx() { prisma }: Context,
         @Root() { id }: User,
-    ): Promise<[Post]> {
-        return prisma.user({ id }).posts();
+        @Arg('filter', { nullable: true }) filter: string,
+        @Arg('skip', () => Int, { nullable: true }) skip: number,
+        @Arg('after', { nullable: true }) after: string,
+        @Arg('before', { nullable: true }) before: string,
+        @Arg('first', () => Int, { nullable: true }) first: number,
+        @Arg('last', () => Int, { nullable: true }) last: number,
+        @Arg('orderBy', () => PostOrderByInput, { nullable: true })
+        orderBy: PostOrderByInput,
+    ): Promise<PostConnection> {
+        const where = filter
+            ? { AND: [{ author: { id }, title_contains: filter }] }
+            : { author: { id } };
+        const posts = await prisma.postsConnection({
+            where,
+            skip,
+            after,
+            before,
+            first,
+            last,
+            orderBy,
+        });
+        const totalCount = await prisma
+            .postsConnection({ where })
+            .aggregate()
+            .count();
+
+        return {
+            edges: posts.edges,
+            pageInfo: posts.pageInfo,
+            totalCount,
+        };
     }
 }

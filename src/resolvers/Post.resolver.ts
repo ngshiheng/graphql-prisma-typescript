@@ -59,7 +59,7 @@ export class PostResolvers implements ResolverInterface<Post> {
             orderBy,
         });
         const totalCount = await prisma
-            .postsConnection()
+            .postsConnection({ where })
             .aggregate()
             .count();
 
