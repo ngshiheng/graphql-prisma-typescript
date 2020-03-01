@@ -1,7 +1,7 @@
+import { APP_SECRET } from '@utils/constants';
 import { Context } from 'graphql-yoga/dist/types';
 import { verify } from 'jsonwebtoken';
 import { AuthChecker } from 'type-graphql';
-import { APP_SECRET } from '../utils/constants';
 
 export const authenticationChecker: AuthChecker = (
     { args, context: { request } }: Context,

@@ -1,3 +1,13 @@
+import { PostConnection, PostOrderByInput } from '@entities/Post.entity';
+import {
+    AuthPayload,
+    User,
+    UserConnection,
+    UserCreateInput,
+    UserOrderByInput,
+    UserUpdateInput,
+} from '@entities/User.entity';
+import { APP_SECRET, TOKEN_EXPIRY } from '@utils/constants';
 import { compare, hash } from 'bcryptjs';
 import { Context } from 'graphql-yoga/dist/types';
 import { sign } from 'jsonwebtoken';
@@ -13,16 +23,6 @@ import {
     ResolverInterface,
     Root,
 } from 'type-graphql';
-import { PostConnection, PostOrderByInput } from '../entities/Post.entity';
-import {
-    AuthPayload,
-    User,
-    UserConnection,
-    UserCreateInput,
-    UserOrderByInput,
-    UserUpdateInput,
-} from '../entities/User.entity';
-import { APP_SECRET, TOKEN_EXPIRY } from '../utils/constants';
 
 @Resolver(() => User)
 export class UserResolvers implements ResolverInterface<User> {

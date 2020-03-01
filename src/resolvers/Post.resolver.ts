@@ -1,6 +1,14 @@
+import {
+    Post,
+    PostConnection,
+    PostCreateInput,
+    PostOrderByInput,
+    PostUpdateInput,
+} from '@entities/Post.entity';
+import { User } from '@entities/User.entity';
+import { APP_SECRET } from '@utils/constants';
 import { Context } from 'graphql-yoga/dist/types';
 import { verify } from 'jsonwebtoken';
-import { User } from 'src/entities/User.entity';
 import {
     Arg,
     Authorized,
@@ -13,14 +21,6 @@ import {
     ResolverInterface,
     Root,
 } from 'type-graphql';
-import {
-    Post,
-    PostConnection,
-    PostCreateInput,
-    PostOrderByInput,
-    PostUpdateInput,
-} from '../entities/Post.entity';
-import { APP_SECRET } from '../utils/constants';
 
 @Resolver(() => Post)
 export class PostResolvers implements ResolverInterface<Post> {

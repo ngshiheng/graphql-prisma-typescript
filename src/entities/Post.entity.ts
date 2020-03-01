@@ -1,3 +1,5 @@
+import { PageInfo } from '@entities/PageInfo';
+import { User } from '@entities/User.entity';
 import {
     Field,
     ID,
@@ -6,8 +8,6 @@ import {
     ObjectType,
     registerEnumType,
 } from 'type-graphql';
-import { PageInfo } from './PageInfo';
-import { User } from './User.entity';
 
 @ObjectType({ description: 'Post model' })
 export class Post {
