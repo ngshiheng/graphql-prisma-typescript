@@ -26,7 +26,6 @@ import { APP_SECRET, TOKEN_EXPIRY } from '../utils/constants';
 
 @Resolver(() => User)
 export class UserResolvers implements ResolverInterface<User> {
-    @Authorized('USER')
     @Query(() => User)
     async user(
         @Ctx() { prisma }: Context,
@@ -39,7 +38,6 @@ export class UserResolvers implements ResolverInterface<User> {
         return user;
     }
 
-    @Authorized('USER')
     @Query(() => UserConnection)
     async users(
         @Ctx() { prisma }: Context,
