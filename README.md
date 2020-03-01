@@ -11,7 +11,7 @@
 [![Build Status](https://travis-ci.org/ngshiheng/graphql-prisma-typescript.svg?branch=master)](https://travis-ci.org/ngshiheng/graphql-prisma-typescript)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/ngshiheng/graphql-prisma-typescript/blob/master/LICENSE)
 
-A GraphQL, Prisma, NodeJS boilerplate with authentication setup
+A GraphQL, Prisma, TypeScript server boilerplate with authentication setup.
 
 # Tech Stacks
 
@@ -25,7 +25,7 @@ A GraphQL, Prisma, NodeJS boilerplate with authentication setup
 ## Setup environment variables
 
 ```bash
-export PRISMA_QL_ENDPOINT="https://xxx.xxx.xxx"
+export PRISMA_GQL_ENDPOINT="https://xxx.xxx.xxx"
 export ENDPOINT="/graphql"
 export PORT=4000
 export SECRET="my-app-secret"
@@ -41,7 +41,6 @@ prisma deploy
 ```
 
 -   For quick setup, choose `Demo server + MySQL database` option
-
 -   Set your prisma endpoint to `PRISMA_GQL_ENDPOINT` inside your `bash_profile` or `bashrc` or any environment variable of your system
 -   More information on [setting up Prisma](https://www.prisma.io/docs/get-started/01-setting-up-prisma-new-database-JAVASCRIPT-a002/)
 
