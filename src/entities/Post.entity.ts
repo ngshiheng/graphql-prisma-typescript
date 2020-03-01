@@ -2,6 +2,7 @@ import {
     Field,
     ID,
     InputType,
+    Int,
     ObjectType,
     registerEnumType,
 } from 'type-graphql';
@@ -53,7 +54,7 @@ export class PostEdge {
     node: Post;
 
     @Field({ description: 'Cursor used for posts pagination' })
-    cursor: String;
+    cursor: string;
 }
 
 @ObjectType()
@@ -64,7 +65,7 @@ export class PostConnection {
     @Field()
     pageInfo: PageInfo;
 
-    @Field()
+    @Field(() => Int)
     totalCount: number;
 }
 

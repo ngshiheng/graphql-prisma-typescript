@@ -9,8 +9,8 @@ export class PageInfo {
     hasPreviousPage: Boolean;
 
     @Field({ description: 'ID of the first object of the current page' })
-    startCursor: String;
+    startCursor: string;
 
     @Field({ description: 'ID of the last object of the current page' })
-    endCursor: String;
+    endCursor: string;
 }

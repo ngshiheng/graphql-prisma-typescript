@@ -2,11 +2,12 @@ import {
     Field,
     ID,
     InputType,
+    Int,
     ObjectType,
     registerEnumType,
 } from 'type-graphql';
 import { PageInfo } from './PageInfo';
-import { Post } from './Post.entity';
+import { PostConnection } from './Post.entity';
 
 @ObjectType({ description: 'User model' })
 export class User {
@@ -25,8 +26,8 @@ export class User {
     @Field(() => UserRole, { description: 'Role of the user' })
     role: UserRole;
 
-    @Field(() => [Post], { description: 'Posts authored by the user' })
-    posts: [Post];
+    @Field(() => PostConnection, { description: 'Posts authored by the user' })
+    posts: PostConnection;
 
     @Field({ description: 'Date of which the user is created' })
     createdAt: string;
@@ -74,7 +75,7 @@ export class UserEdge {
     node: User;
 
     @Field({ description: 'Cursor used for users pagination' })
-    cursor: String;
+    cursor: string;
 }
 
 @ObjectType()
@@ -85,7 +86,7 @@ export class UserConnection {
     @Field()
     pageInfo: PageInfo;
 
-    @Field()
+    @Field(() => Int)
     totalCount: number;
 }
 

@@ -69,7 +69,7 @@ enum PostCategory {
 type PostConnection {
   edges: [PostEdge!]!
   pageInfo: PageInfo!
-  totalCount: Float!
+  totalCount: Int!
 }
 
 """Post creation inputs"""
@@ -130,7 +130,7 @@ type User {
   role: UserRole!
 
   """Posts authored by the user"""
-  posts: [Post!]!
+  posts(orderBy: PostOrderByInput, last: Int, first: Int, before: String, after: String, skip: Int, filter: String): PostConnection!
 
   """Date of which the user is created"""
   createdAt: String!
@@ -142,7 +142,7 @@ type User {
 type UserConnection {
   edges: [UserEdge!]!
   pageInfo: PageInfo!
-  totalCount: Float!
+  totalCount: Int!
 }
 
 """User creation inputs"""
