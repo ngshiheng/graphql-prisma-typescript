@@ -1,5 +1,10 @@
 import { authenticationChecker } from '@authentication/authenticate';
 import { prisma } from '@generated/prisma-client';
+import { GraphQLError } from 'graphql';
+import queryComplexity, {
+    fieldExtensionsEstimator,
+    simpleEstimator,
+} from 'graphql-query-complexity';
 import { GraphQLServer } from 'graphql-yoga';
 import 'reflect-metadata';
 import { buildSchema } from 'type-graphql';
@@ -42,7 +47,24 @@ const main = async () => {
         endpoint: process.env.ENDPOINT,
         playground: process.env.ENDPOINT,
         defaultPlaygroundQuery: defaultLoginQuery,
-    };
+        validationRules: [
+            queryComplexity({
+                maximumComplexity: 100,
+                variables: {},
+                createError: (max: number, actual: number) => {
+                    return new GraphQLError(
+                        `Query is too complex: ${actual}. Maximum allowed complexity: ${max}`,
+                    );
+                },
+                estimators: [
+                    fieldExtensionsEstimator(),
+                    simpleEstimator({
+                        defaultComplexity: 1,
+                    }),
+                ],
+            }),
+        ],
+    } as any;
 
     server.start(options, () =>
         console.log(

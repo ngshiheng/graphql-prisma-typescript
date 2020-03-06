@@ -31,7 +31,7 @@ export class UserResolvers implements ResolverInterface<User> {
         @Ctx() { prisma }: Context,
         @Arg('id') id: string,
     ): Promise<User> {
-        const user = await prisma.user({ id }).posts();
+        const user = await prisma.user({ id });
         if (!user) {
             throw new Error('User does not exist');
         }

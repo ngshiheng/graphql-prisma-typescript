@@ -7,7 +7,7 @@
     "license": "MIT",
     "private": false,
     "scripts": {
-        "start": "nodemon -e ts,graphql -x ts-node -r tsconfig-paths/register src/index.ts",
+        "start": "nodemon -e ts -x ts-node -r tsconfig-paths/register src/index.ts",
         "eslint": "eslint . --ext ts,gql --ignore-path .eslintignore",
         "eslint:fix:": "eslint --fix . --ext ts,gql --ignore-path .eslintignore",
         "prettier": "prettier \"./**/*.{ts,yml,yaml}\" -l --ignore-path .eslintignore",
@@ -16,6 +16,8 @@
     "dependencies": {
         "bcryptjs": "^2.4.3",
         "graphql": "^14.6.0",
+        "graphql-query-complexity": "^0.4.1",
+        "graphql-tools": "^4.0.7",
         "graphql-yoga": "^1.18.3",
         "jsonwebtoken": "^8.5.1",
         "path": "^0.12.7",
@@ -27,8 +29,8 @@
         "@types/bcryptjs": "^2.4.2",
         "@types/graphql": "^14.5.0",
         "@types/jsonwebtoken": "^8.3.8",
-        "@typescript-eslint/eslint-plugin": "^2.21.0",
-        "@typescript-eslint/parser": "^2.21.0",
+        "@typescript-eslint/eslint-plugin": "^2.22.0",
+        "@typescript-eslint/parser": "^2.22.0",
         "babel-eslint": "^10.1.0",
         "eslint": "^6.8.0",
         "eslint-plugin-graphql": "^3.1.1",

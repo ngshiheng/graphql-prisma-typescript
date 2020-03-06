@@ -20,9 +20,6 @@ export class User {
     @Field({ description: 'Email of the user' })
     email: string;
 
-    @Field({ description: 'Password of the user' })
-    password: string;
-
     @Field(() => UserRole, { description: 'Role of the user' })
     role: UserRole;
 

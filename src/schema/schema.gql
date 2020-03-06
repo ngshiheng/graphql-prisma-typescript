@@ -123,9 +123,6 @@ type User {
   """Email of the user"""
   email: String!
 
-  """Password of the user"""
-  password: String!
-
   """Role of the user"""
   role: UserRole!
 
