@@ -52,6 +52,7 @@ yarn install
 yarn start
 ```
 
+-   Run `yarn seed:generate` to populate your database with some dummy data
 -   Run `prisma deploy` every time you change your prisma data models
 
 ## Start with Docker

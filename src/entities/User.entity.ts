@@ -1,5 +1,6 @@
 import { PageInfo } from '@entities/PageInfo';
 import { PostConnection } from '@entities/Post.entity';
+import 'reflect-metadata';
 import {
     Field,
     ID,

@@ -1,5 +1,6 @@
 import { PageInfo } from '@entities/PageInfo';
 import { User } from '@entities/User.entity';
+import 'reflect-metadata';
 import {
     Field,
     ID,
@@ -70,10 +71,18 @@ export class PostConnection {
 }
 
 export enum Category {
-    SPORT = 'SPORT',
+    CAREER = 'CAREER',
+    EDUCATION = 'EDUCATION',
     FINANCE = 'FINANCE',
-    TECHNOLOGY = 'TECHNOLOGY',
+    FITNESS = 'FITNESS',
+    FOOD = 'FOOD',
+    GAMING = 'GAMING',
+    HEALTH = 'HEALTH',
+    NATURE = 'NATURE',
     OTHER = 'OTHER',
+    PETS = 'PETS',
+    SPORTS = 'SPORTS',
+    TECHNOLOGY = 'TECHNOLOGY',
 }
 
 registerEnumType(Category, {
