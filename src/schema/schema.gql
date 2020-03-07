@@ -60,10 +60,18 @@ type Post {
 
 """Categories available for the post"""
 enum PostCategory {
-  SPORT
+  CAREER
+  EDUCATION
   FINANCE
-  TECHNOLOGY
+  FITNESS
+  FOOD
+  GAMING
+  HEALTH
+  NATURE
   OTHER
+  PETS
+  SPORTS
+  TECHNOLOGY
 }
 
 type PostConnection {

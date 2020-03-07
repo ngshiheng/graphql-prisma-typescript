@@ -16,10 +16,18 @@ export const typeDefs = /* GraphQL */ `
     }
 
     enum Category {
-        SPORT
+        CAREER
+        EDUCATION
         FINANCE
-        TECHNOLOGY
+        FITNESS
+        FOOD
+        GAMING
+        HEALTH
+        NATURE
         OTHER
+        PETS
+        SPORTS
+        TECHNOLOGY
     }
 
     scalar DateTime

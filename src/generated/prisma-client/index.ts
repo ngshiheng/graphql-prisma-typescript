@@ -4,8 +4,8 @@
 
 import { DocumentNode } from 'graphql';
 import {
-    BaseClientOptions,
     makePrismaClientClass,
+    BaseClientOptions,
     Model,
 } from 'prisma-client-lib';
 import { typeDefs } from './prisma-schema';
@@ -140,7 +140,19 @@ export interface ClientConstructor<T> {
  * Types
  */
 
-export type Category = 'SPORT' | 'FINANCE' | 'TECHNOLOGY' | 'OTHER';
+export type Category =
+    | 'CAREER'
+    | 'EDUCATION'
+    | 'FINANCE'
+    | 'FITNESS'
+    | 'FOOD'
+    | 'GAMING'
+    | 'HEALTH'
+    | 'NATURE'
+    | 'OTHER'
+    | 'PETS'
+    | 'SPORTS'
+    | 'TECHNOLOGY';
 
 export type UserRole = 'ADMIN' | 'USER';
 

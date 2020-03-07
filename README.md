@@ -11,7 +11,7 @@
 [![Build Status](https://travis-ci.org/ngshiheng/graphql-prisma-typescript.svg?branch=master)](https://travis-ci.org/ngshiheng/graphql-prisma-typescript)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/ngshiheng/graphql-prisma-typescript/blob/master/LICENSE)
 
-A GraphQL, Prisma, TypeScript server boilerplate with authentication setup.
+A GraphQL, Prisma, TypeScript server boilerplate with authentication setup
 
 # Tech Stacks
 
@@ -19,17 +19,18 @@ A GraphQL, Prisma, TypeScript server boilerplate with authentication setup.
 -   [prisma](https://github.com/prisma/prisma)
 -   [type-graphql](https://typegraphql.ml/)
 -   [typescript](https://www.typescriptlang.org/)
+-   [graphql-query-complexity](https://github.com/slicknode/graphql-query-complexity)
 
 # Usage
 
 ## Setup environment variables
 
 ```bash
-export PRISMA_GQL_ENDPOINT="https://xxx.xxx.xxx"
 export ENDPOINT="/graphql"
-export PORT=4000
-export SECRET="my-app-secret"
 export EXPIRY="12h"
+export PORT=4000
+export PRISMA_GQL_ENDPOINT="https://xxx.xxx.xxx"
+export SECRET="my-app-secret"
 ```
 
 ## Installing Prisma CLI
@@ -50,6 +51,8 @@ prisma deploy
 yarn install
 yarn start
 ```
+
+-   Run `prisma deploy` every time you change your prisma data models
 
 ## Start with Docker
 

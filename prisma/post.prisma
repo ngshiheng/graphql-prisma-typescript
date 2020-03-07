@@ -2,15 +2,23 @@ type Post {
     id: ID! @id
     title: String!
     category: Category! @default(value: OTHER)
-    author: User!
+    author: User! @relation(name: "PostsByUser")
     createdAt: DateTime! @createdAt
     updatedAt: DateTime! @updatedAt
 }
 
 enum Category {
-    SPORT
+    CAREER
+    EDUCATION
     FINANCE
-    TECHNOLOGY
+    FITNESS
+    FOOD
+    GAMING
+    HEALTH
+    NATURE
     OTHER
+    PETS
+    SPORTS
+    TECHNOLOGY
 }
 

@@ -1,5 +1,6 @@
 import { authenticationChecker } from '@authentication/authenticate';
 import { prisma } from '@generated/prisma-client';
+import { DEFAULT_LOGIN_QUERY, MAXIMUM_COMPLEXITY } from '@utils/constants';
 import { GraphQLError } from 'graphql';
 import queryComplexity, {
     fieldExtensionsEstimator,
@@ -9,21 +10,6 @@ import { GraphQLServer } from 'graphql-yoga';
 import 'reflect-metadata';
 import { buildSchema } from 'type-graphql';
 import path = require('path');
-
-const defaultLoginQuery = `# Enter your email and password to login to receive your access token
-mutation {
-    login(email: "", password: "") {
-        token
-        user {
-            id
-        }
-    }
-}
-
-# Replace <paste access token here> with your access token
-# Paste the authorization header below in the 'HTTP HEADERS' tab at the bottom of the page for all your requests
-# { "Authorization": "Bearer <paste access token here>" }
-`;
 
 const main = async () => {
     const schema = await buildSchema({
@@ -46,10 +32,10 @@ const main = async () => {
         port: process.env.PORT,
         endpoint: process.env.ENDPOINT,
         playground: process.env.ENDPOINT,
-        defaultPlaygroundQuery: defaultLoginQuery,
+        defaultPlaygroundQuery: DEFAULT_LOGIN_QUERY,
         validationRules: [
             queryComplexity({
-                maximumComplexity: 100,
+                maximumComplexity: MAXIMUM_COMPLEXITY,
                 variables: {},
                 createError: (max: number, actual: number) => {
                     return new GraphQLError(
