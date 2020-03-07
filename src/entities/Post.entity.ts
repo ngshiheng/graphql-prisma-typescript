@@ -95,6 +95,8 @@ export enum PostOrderByInput {
     id_DESC = 'id_DESC',
     title_ASC = 'title_ASC',
     title_DESC = 'title_DESC',
+    category_ASC = 'category_ASC',
+    category_DESC = 'category_DESC',
     createdAt_ASC = 'createdAt_ASC',
     createdAt_DESC = 'createdAt_DESC',
     updatedAt_ASC = 'updatedAt_ASC',

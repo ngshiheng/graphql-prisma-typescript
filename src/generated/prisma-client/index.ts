@@ -4,8 +4,8 @@
 
 import { DocumentNode } from 'graphql';
 import {
-    makePrismaClientClass,
     BaseClientOptions,
+    makePrismaClientClass,
     Model,
 } from 'prisma-client-lib';
 import { typeDefs } from './prisma-schema';

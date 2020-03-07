@@ -1,4 +1,4 @@
-import { PostConnection, PostOrderByInput } from '@entities/Post.entity';
+import { PostOrderByInput } from '@entities/Post.entity';
 import {
     AuthPayload,
     User,
@@ -7,9 +7,9 @@ import {
     UserOrderByInput,
     UserUpdateInput,
 } from '@entities/User.entity';
-import { APP_SECRET, TOKEN_EXPIRY } from '@utils/constants';
+import { APP_SECRET, SALT_ROUNDS, TOKEN_EXPIRY } from '@utils/constants';
+import { Context } from '@utils/context';
 import { compare, hash } from 'bcryptjs';
-import { Context } from 'graphql-yoga/dist/types';
 import { sign } from 'jsonwebtoken';
 import {
     Arg,
@@ -20,17 +20,13 @@ import {
     Mutation,
     Query,
     Resolver,
-    ResolverInterface,
     Root,
 } from 'type-graphql';
 
-@Resolver(() => User)
-export class UserResolvers implements ResolverInterface<User> {
+@Resolver(User)
+export class UserResolvers {
     @Query(() => User)
-    async user(
-        @Ctx() { prisma }: Context,
-        @Arg('id') id: string,
-    ): Promise<User> {
+    async user(@Ctx() { prisma }: Context, @Arg('id') id: string) {
         const user = await prisma.user({ id });
         if (!user) {
             throw new Error('User does not exist');
@@ -49,7 +45,7 @@ export class UserResolvers implements ResolverInterface<User> {
         @Arg('last', () => Int, { nullable: true }) last: number,
         @Arg('orderBy', () => UserOrderByInput, { nullable: true })
         orderBy: UserOrderByInput,
-    ): Promise<UserConnection> {
+    ) {
         const where = filter ? { OR: [{ email_contains: filter }] } : {};
         const users = await prisma.usersConnection({
             where,
@@ -78,12 +74,12 @@ export class UserResolvers implements ResolverInterface<User> {
         @Ctx() { prisma }: Context,
         @Arg('input', () => UserCreateInput)
         { email, password, role, name }: UserCreateInput,
-    ): Promise<AuthPayload> {
+    ) {
         const userEmail = await prisma.user({ email });
         if (userEmail) {
             throw new Error('Email is already registered');
         }
-        const hashedPassword = await hash(password, 10);
+        const hashedPassword = await hash(password, SALT_ROUNDS);
         const user = await prisma.createUser({
             name,
             role,
@@ -105,7 +101,7 @@ export class UserResolvers implements ResolverInterface<User> {
         @Arg('name', { nullable: true }) name: string,
         @Arg('password') password: string,
         @Arg('email') email: string,
-    ): Promise<AuthPayload> {
+    ) {
         const userEmail = await prisma.user({ email });
         if (userEmail) {
             throw new Error('Email is already registered');
@@ -130,7 +126,7 @@ export class UserResolvers implements ResolverInterface<User> {
         @Ctx() { prisma }: Context,
         @Arg('email') email: string,
         @Arg('password') password: string,
-    ): Promise<AuthPayload> {
+    ) {
         const user = await prisma.user({ email });
         if (!user) {
             throw new Error('User does not exist');
@@ -154,7 +150,7 @@ export class UserResolvers implements ResolverInterface<User> {
         @Ctx() { prisma }: Context,
         @Arg('id') id: string,
         @Arg('input') input: UserUpdateInput,
-    ): Promise<User> {
+    ) {
         const user = await prisma.user({ id });
         if (!user) {
             throw new Error('User does not exist');
@@ -167,10 +163,7 @@ export class UserResolvers implements ResolverInterface<User> {
 
     @Authorized('OWNER')
     @Mutation(() => User)
-    async deleteUser(
-        @Ctx() { prisma }: Context,
-        @Arg('id') id: string,
-    ): Promise<User> {
+    async deleteUser(@Ctx() { prisma }: Context, @Arg('id') id: string) {
         const user = await prisma.user({ id });
         if (!user) {
             throw new Error('User does not exist');
@@ -190,7 +183,7 @@ export class UserResolvers implements ResolverInterface<User> {
         @Arg('last', () => Int, { nullable: true }) last: number,
         @Arg('orderBy', () => PostOrderByInput, { nullable: true })
         orderBy: PostOrderByInput,
-    ): Promise<PostConnection> {
+    ) {
         const where = filter
             ? { AND: [{ author: { id }, title_contains: filter }] }
             : { author: { id } };

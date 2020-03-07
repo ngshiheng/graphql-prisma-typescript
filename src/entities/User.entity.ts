@@ -105,6 +105,8 @@ export enum UserOrderByInput {
     name_DESC = 'name_DESC',
     email_ASC = 'email_ASC',
     email_DESC = 'email_DESC',
+    role_ASC = 'role_ASC',
+    role_DESC = 'role_DESC',
     createdAt_ASC = 'createdAt_ASC',
     createdAt_DESC = 'createdAt_DESC',
     updatedAt_ASC = 'updatedAt_ASC',

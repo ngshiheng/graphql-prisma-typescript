@@ -1,7 +1,7 @@
 import { Category } from '@entities/Post.entity';
 import { UserRole } from '@entities/User.entity';
 import { prisma } from '@generated/prisma-client';
-import { MAXIMUM_SEED } from '@utils/constants';
+import { DUMMY_PASSWORD, MAXIMUM_SEED, SALT_ROUNDS } from '@utils/constants';
 import { hash } from 'bcryptjs';
 import { company, internet, name } from 'faker';
 import { sample } from 'lodash';
@@ -11,7 +11,7 @@ export const databaseSeed = async () => {
     // Create 5 random users
     let userCount: number = 0;
     while (userCount < MAXIMUM_SEED) {
-        let hashedPassword = await hash('testPassword', 10);
+        let hashedPassword = await hash(DUMMY_PASSWORD, SALT_ROUNDS);
         await prisma.createUser({
             name: name.findName(),
             email: internet.email(),

@@ -3,26 +3,28 @@ import { Context } from 'graphql-yoga/dist/types';
 import { verify } from 'jsonwebtoken';
 import { AuthChecker } from 'type-graphql';
 
-export const authenticationChecker: AuthChecker = (
-    { args, context: { request } }: Context,
+export const authenticationChecker: AuthChecker = async (
+    { args, context: { request, prisma } }: Context,
     roles,
 ) => {
     const getAuthHeader = request.get('Authorization');
     if (getAuthHeader) {
         const token = getAuthHeader.replace('Bearer ', '');
         const { userId, role }: any = verify(token, APP_SECRET);
-        if (roles.includes('OWNER')) {
-            return args.id === userId || role === 'ADMIN';
+        if (role === 'ADMIN') {
+            return true;
         }
-        switch (role) {
-            case 'ADMIN':
+        // Check if the requester is an owner of the object
+        if (roles.includes('OWNER')) {
+            if (args.id === userId) {
                 return true;
+            }
 
-            case 'USER':
-                return roles.includes(role);
-
-            default:
-                return false;
+            const author = await prisma.post({ id: args.id }).author();
+            if (author) {
+                return userId === author.id;
+            }
+            return false;
         }
     }
     return false;

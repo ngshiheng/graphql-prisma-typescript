@@ -5,9 +5,8 @@ import {
     PostOrderByInput,
     PostUpdateInput,
 } from '@entities/Post.entity';
-import { User } from '@entities/User.entity';
 import { APP_SECRET } from '@utils/constants';
-import { Context } from 'graphql-yoga/dist/types';
+import { Context } from '@utils/context';
 import { verify } from 'jsonwebtoken';
 import {
     Arg,
@@ -18,17 +17,13 @@ import {
     Mutation,
     Query,
     Resolver,
-    ResolverInterface,
     Root,
 } from 'type-graphql';
 
-@Resolver(() => Post)
-export class PostResolvers implements ResolverInterface<Post> {
+@Resolver(Post)
+export class PostResolvers {
     @Query(() => Post)
-    async post(
-        @Ctx() { prisma }: Context,
-        @Arg('id') id: string,
-    ): Promise<Post> {
+    async post(@Ctx() { prisma }: Context, @Arg('id') id: string) {
         const post = await prisma.post({ id });
         if (!post) {
             throw new Error('Post does not exist');
@@ -47,7 +42,7 @@ export class PostResolvers implements ResolverInterface<Post> {
         @Arg('last', () => Int, { nullable: true }) last: number,
         @Arg('orderBy', () => PostOrderByInput, { nullable: true })
         orderBy: PostOrderByInput,
-    ): Promise<PostConnection> {
+    ) {
         const where = filter ? { OR: [{ title_contains: filter }] } : {};
         const posts = await prisma.postsConnection({
             where,
@@ -76,7 +71,7 @@ export class PostResolvers implements ResolverInterface<Post> {
         @Ctx() { prisma, request }: Context,
         @Arg('input', () => PostCreateInput)
         { title, category }: PostCreateInput,
-    ): Promise<Post> {
+    ) {
         const getAuthHeader = request.get('Authorization');
         if (getAuthHeader) {
             const token = getAuthHeader.replace('Bearer ', '');
@@ -96,7 +91,7 @@ export class PostResolvers implements ResolverInterface<Post> {
         @Arg('id') id: string,
         @Ctx() { prisma }: Context,
         @Arg('input', () => PostUpdateInput) input: PostUpdateInput,
-    ): Promise<Post> {
+    ) {
         const post = await prisma.post({ id });
         if (!post) {
             throw new Error('Post does not exist');
@@ -107,24 +102,14 @@ export class PostResolvers implements ResolverInterface<Post> {
         });
     }
 
-    @Authorized('OWNER')
-    @Mutation(() => Post)
-    async deletePost(
-        @Ctx() { prisma }: Context,
-        @Arg('id') id: string,
-    ): Promise<Post> {
-        const post = await prisma.post({ id });
-        if (!post) {
-            throw new Error('Post does not exist');
-        }
-        return await prisma.deletePost({ id });
+    @FieldResolver()
+    async author(@Ctx() { prisma }: Context, @Root() { id }: Post) {
+        return prisma.post({ id }).author();
     }
 
-    @FieldResolver()
-    async author(
-        @Ctx() { prisma }: Context,
-        @Root() { id }: Post,
-    ): Promise<User> {
-        return prisma.post({ id }).author();
+    @Authorized('OWNER')
+    @Mutation(() => Post)
+    async deletePost(@Ctx() { prisma }: Context, @Arg('id') id: string) {
+        return await prisma.deletePost({ id });
     }
 }

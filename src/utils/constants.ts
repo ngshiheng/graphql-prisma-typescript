@@ -6,7 +6,9 @@ export const MAXIMUM_COMPLEXITY: number = 100;
 
 export const MAXIMUM_SEED: number = 5;
 
-export const SALT_ROUND: number = 10; // Hide this for actual usage
+export const DUMMY_PASSWORD: string = process.env.DUMMY_PASSWORD!;
+
+export const SALT_ROUNDS: number = 10;
 
 export const DEFAULT_LOGIN_QUERY = `# Enter your email and password to login to receive your access token
 mutation {

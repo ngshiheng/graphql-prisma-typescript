@@ -28,6 +28,7 @@ A GraphQL, Prisma, TypeScript server boilerplate with authentication setup
 ```bash
 export ENDPOINT="/graphql"
 export EXPIRY="12h"
+export DUMMY_PASSWORD="my-super-secret-password"
 export PORT=4000
 export PRISMA_GQL_ENDPOINT="https://xxx.xxx.xxx"
 export SECRET="my-app-secret"

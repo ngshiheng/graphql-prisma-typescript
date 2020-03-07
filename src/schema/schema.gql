@@ -101,6 +101,8 @@ enum PostOrderByInput {
   id_DESC
   title_ASC
   title_DESC
+  category_ASC
+  category_DESC
   createdAt_ASC
   createdAt_DESC
   updatedAt_ASC
@@ -175,6 +177,8 @@ enum UserOrderByInput {
   name_DESC
   email_ASC
   email_DESC
+  role_ASC
+  role_DESC
   createdAt_ASC
   createdAt_DESC
   updatedAt_ASC
