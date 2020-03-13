@@ -12,6 +12,12 @@ type AuthPayload {
   user: User!
 }
 
+"""Message payload"""
+type MessagePayload {
+  """Message that is returned to the user"""
+  message: String!
+}
+
 type Mutation {
   createPost(input: PostCreateInput!): Post!
   updatePost(input: PostUpdateInput!, id: String!): Post!
@@ -21,6 +27,8 @@ type Mutation {
   login(password: String!, email: String!): AuthPayload!
   updateUser(input: UserUpdateInput!, id: String!): User!
   deleteUser(id: String!): User!
+  resetPassword(email: String!): MessagePayload!
+  updatePassword(password: String!): MessagePayload!
 }
 
 type PageInfo {

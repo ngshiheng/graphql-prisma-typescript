@@ -19,7 +19,6 @@ export const authenticationChecker: AuthChecker = async (
             if (args.id === userId) {
                 return true;
             }
-
             const author = await prisma.post({ id: args.id }).author();
             if (author) {
                 return userId === author.id;

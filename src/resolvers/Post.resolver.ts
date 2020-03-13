@@ -65,7 +65,6 @@ export class PostResolvers {
         };
     }
 
-    @Authorized('USER')
     @Mutation(() => Post)
     async createPost(
         @Ctx() { prisma, request }: Context,
@@ -102,14 +101,14 @@ export class PostResolvers {
         });
     }
 
-    @FieldResolver()
-    async author(@Ctx() { prisma }: Context, @Root() { id }: Post) {
-        return prisma.post({ id }).author();
-    }
-
     @Authorized('OWNER')
     @Mutation(() => Post)
     async deletePost(@Ctx() { prisma }: Context, @Arg('id') id: string) {
         return await prisma.deletePost({ id });
+    }
+
+    @FieldResolver()
+    async author(@Ctx() { prisma }: Context, @Root() { id }: Post) {
+        return prisma.post({ id }).author();
     }
 }

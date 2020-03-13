@@ -1,6 +1,7 @@
 import { PostOrderByInput } from '@entities/Post.entity';
 import {
     AuthPayload,
+    MessagePayload,
     User,
     UserConnection,
     UserCreateInput,
@@ -9,8 +10,9 @@ import {
 } from '@entities/User.entity';
 import { APP_SECRET, SALT_ROUNDS, TOKEN_EXPIRY } from '@utils/constants';
 import { Context } from '@utils/context';
+import { sendPasswordResetEmail } from '@utils/mailer';
 import { compare, hash } from 'bcryptjs';
-import { sign } from 'jsonwebtoken';
+import { sign, verify } from 'jsonwebtoken';
 import {
     Arg,
     Authorized,
@@ -129,7 +131,7 @@ export class UserResolvers {
     ) {
         const user = await prisma.user({ email });
         if (!user) {
-            throw new Error('User does not exist');
+            throw new Error('User does not exist'); // Note: Use ambiguous error message in production
         }
         const isPasswordValid = await compare(password, user.password);
         if (!isPasswordValid) {
@@ -169,6 +171,46 @@ export class UserResolvers {
             throw new Error('User does not exist');
         }
         return await prisma.deleteUser({ id });
+    }
+
+    @Mutation(() => MessagePayload)
+    async resetPassword(
+        @Ctx() { prisma }: Context,
+        @Arg('email') email: string,
+    ) {
+        const user = await prisma.user({ email });
+        if (!user) {
+            throw new Error('User does not exist'); // Note: This should return the same message as sendPasswordResetEmail
+        }
+        const token = sign({ userEmail: email }, APP_SECRET, {
+            expiresIn: TOKEN_EXPIRY, // Note: Make this short-lived and single use only
+        });
+        sendPasswordResetEmail(email, token);
+        return {
+            message: 'Password reset email sent. Please check your inbox',
+        };
+    }
+
+    @Mutation(() => MessagePayload)
+    async updatePassword(
+        @Ctx() { prisma, request }: Context,
+        @Arg('password') password: string,
+    ) {
+        const getAuthHeader = request.get('Authorization');
+        if (getAuthHeader) {
+            const token = getAuthHeader.replace('Bearer ', '');
+            const { userEmail }: any = verify(token, APP_SECRET);
+            const hashedPassword = await hash(password, SALT_ROUNDS);
+            await prisma.updateUser({
+                where: { email: userEmail },
+                data: { password: hashedPassword },
+            });
+            return {
+                message:
+                    'Password reset successful. You may now login with your new password',
+            };
+        }
+        throw new Error('Invalid token');
     }
 
     @FieldResolver()

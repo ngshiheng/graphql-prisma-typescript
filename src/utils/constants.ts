@@ -10,6 +10,10 @@ export const DUMMY_PASSWORD: string = process.env.DUMMY_PASSWORD!;
 
 export const SALT_ROUNDS: number = 10;
 
+export const GMAIL_USER: string = process.env.GMAIL!;
+
+export const GMAIL_PASSWORD: string = process.env.GMAIL_PASSWORD!;
+
 export const DEFAULT_LOGIN_QUERY = `# Enter your email and password to login to receive your access token
 mutation {
     login(email: "", password: "") {
