@@ -182,9 +182,14 @@ export class UserResolvers {
         if (!user) {
             throw new Error('User does not exist'); // Note: This should return the same message as sendPasswordResetEmail
         }
-        const token = sign({ userEmail: email }, APP_SECRET, {
-            expiresIn: TOKEN_EXPIRY, // Note: Make this short-lived and single use only
-        });
+        const token = sign(
+            { userEmail: email, currentPassword: user.password }, // Note: Change currentPassword to something less obvious in production
+            APP_SECRET,
+            {
+                expiresIn: TOKEN_EXPIRY, // Note: Make this short-lived
+            },
+        );
+        console.log(token);
         sendPasswordResetEmail(email, token);
         return {
             message: 'Password reset email sent. Please check your inbox',
@@ -199,16 +204,30 @@ export class UserResolvers {
         const getAuthHeader = request.get('Authorization');
         if (getAuthHeader) {
             const token = getAuthHeader.replace('Bearer ', '');
-            const { userEmail }: any = verify(token, APP_SECRET);
-            const hashedPassword = await hash(password, SALT_ROUNDS);
-            await prisma.updateUser({
-                where: { email: userEmail },
-                data: { password: hashedPassword },
-            });
-            return {
-                message:
-                    'Password reset successful. You may now login with your new password',
-            };
+            const { userEmail, currentPassword }: any = verify(
+                token,
+                APP_SECRET,
+            );
+
+            const user = await prisma.user({ email: userEmail });
+            if (!user) {
+                throw new Error('User does not exist');
+            }
+            if (user.password === currentPassword) {
+                const hashedPassword = await hash(password, SALT_ROUNDS);
+                await prisma.updateUser({
+                    where: { email: userEmail },
+                    data: { password: hashedPassword },
+                });
+                return {
+                    message:
+                        'Password reset successful. You may now login with your new password',
+                };
+            } else {
+                throw new Error(
+                    'You may only reset your password once with the current token',
+                );
+            }
         }
         throw new Error('Invalid token');
     }
