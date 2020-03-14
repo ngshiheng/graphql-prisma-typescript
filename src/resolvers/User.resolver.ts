@@ -1,4 +1,4 @@
-import { PostOrderByInput } from '@entities/Post.entity';
+import { Post, PostOrderByInput } from '@entities/Post.entity';
 import {
     AuthPayload,
     MessagePayload,
@@ -28,7 +28,10 @@ import {
 @Resolver(User)
 export class UserResolvers {
     @Query(() => User)
-    async user(@Ctx() { prisma }: Context, @Arg('id') id: string) {
+    async user(
+        @Ctx() { prisma }: Context,
+        @Arg('id') id: string,
+    ): Promise<Partial<Post>> {
         const user = await prisma.user({ id });
         if (!user) {
             throw new Error('User does not exist');
@@ -152,7 +155,7 @@ export class UserResolvers {
         @Ctx() { prisma }: Context,
         @Arg('id') id: string,
         @Arg('input') input: UserUpdateInput,
-    ) {
+    ): Promise<Partial<Post>> {
         const user = await prisma.user({ id });
         if (!user) {
             throw new Error('User does not exist');
@@ -165,7 +168,10 @@ export class UserResolvers {
 
     @Authorized('OWNER')
     @Mutation(() => User)
-    async deleteUser(@Ctx() { prisma }: Context, @Arg('id') id: string) {
+    async deleteUser(
+        @Ctx() { prisma }: Context,
+        @Arg('id') id: string,
+    ): Promise<Partial<Post>> {
         const user = await prisma.user({ id });
         if (!user) {
             throw new Error('User does not exist');
@@ -177,7 +183,7 @@ export class UserResolvers {
     async resetPassword(
         @Ctx() { prisma }: Context,
         @Arg('email') email: string,
-    ) {
+    ): Promise<MessagePayload> {
         const user = await prisma.user({ email });
         if (!user) {
             throw new Error('User does not exist'); // Note: This should return the same message as sendPasswordResetEmail
@@ -200,7 +206,7 @@ export class UserResolvers {
     async updatePassword(
         @Ctx() { prisma, request }: Context,
         @Arg('password') password: string,
-    ) {
+    ): Promise<MessagePayload> {
         const getAuthHeader = request.get('Authorization');
         if (getAuthHeader) {
             const token = getAuthHeader.replace('Bearer ', '');

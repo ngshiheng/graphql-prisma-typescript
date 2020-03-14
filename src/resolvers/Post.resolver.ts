@@ -5,6 +5,7 @@ import {
     PostOrderByInput,
     PostUpdateInput,
 } from '@entities/Post.entity';
+import { User } from '@entities/User.entity';
 import { APP_SECRET } from '@utils/constants';
 import { Context } from '@utils/context';
 import { verify } from 'jsonwebtoken';
@@ -23,7 +24,10 @@ import {
 @Resolver(Post)
 export class PostResolvers {
     @Query(() => Post)
-    async post(@Ctx() { prisma }: Context, @Arg('id') id: string) {
+    async post(
+        @Ctx() { prisma }: Context,
+        @Arg('id') id: string,
+    ): Promise<Partial<User>> {
         const post = await prisma.post({ id });
         if (!post) {
             throw new Error('Post does not exist');
@@ -70,7 +74,7 @@ export class PostResolvers {
         @Ctx() { prisma, request }: Context,
         @Arg('input', () => PostCreateInput)
         { title, category }: PostCreateInput,
-    ) {
+    ): Promise<Partial<User>> {
         const getAuthHeader = request.get('Authorization');
         if (getAuthHeader) {
             const token = getAuthHeader.replace('Bearer ', '');
@@ -90,7 +94,7 @@ export class PostResolvers {
         @Arg('id') id: string,
         @Ctx() { prisma }: Context,
         @Arg('input', () => PostUpdateInput) input: PostUpdateInput,
-    ) {
+    ): Promise<Partial<User>> {
         const post = await prisma.post({ id });
         if (!post) {
             throw new Error('Post does not exist');
@@ -103,12 +107,18 @@ export class PostResolvers {
 
     @Authorized('OWNER')
     @Mutation(() => Post)
-    async deletePost(@Ctx() { prisma }: Context, @Arg('id') id: string) {
+    async deletePost(
+        @Ctx() { prisma }: Context,
+        @Arg('id') id: string,
+    ): Promise<Partial<User>> {
         return await prisma.deletePost({ id });
     }
 
     @FieldResolver()
-    async author(@Ctx() { prisma }: Context, @Root() { id }: Post) {
+    async author(
+        @Ctx() { prisma }: Context,
+        @Root() { id }: Post,
+    ): Promise<User> {
         return prisma.post({ id }).author();
     }
 }
