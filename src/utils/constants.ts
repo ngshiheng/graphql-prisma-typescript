@@ -1,6 +1,10 @@
-export const APP_SECRET: string = process.env.SECRET!;
+export const ACCESS_TOKEN_SECRET: string = process.env.ACCESS_TOKEN_SECRET!;
 
-export const TOKEN_EXPIRY: string = process.env.EXPIRY!;
+export const REFRESH_TOKEN_SECRET: string = process.env.REFRESH_TOKEN_SECRET!;
+
+export const ACCESS_TOKEN_EXPIRY: string = process.env.ACCESS_TOKEN_EXPIRY!;
+
+export const REFRESH_TOKEN_EXPIRY: string = process.env.REFRESH_TOKEN_EXPIRY!;
 
 export const MAXIMUM_COMPLEXITY: number = 100;
 

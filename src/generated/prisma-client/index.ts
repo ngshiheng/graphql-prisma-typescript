@@ -4,8 +4,8 @@
 
 import { DocumentNode } from 'graphql';
 import {
-    BaseClientOptions,
     makePrismaClientClass,
+    BaseClientOptions,
     Model,
 } from 'prisma-client-lib';
 import { typeDefs } from './prisma-schema';
@@ -179,6 +179,8 @@ export type UserOrderByInput =
     | 'password_DESC'
     | 'role_ASC'
     | 'role_DESC'
+    | 'refreshToken_ASC'
+    | 'refreshToken_DESC'
     | 'createdAt_ASC'
     | 'createdAt_DESC'
     | 'updatedAt_ASC'
@@ -309,6 +311,20 @@ export interface UserWhereInput {
     posts_every?: Maybe<PostWhereInput>;
     posts_some?: Maybe<PostWhereInput>;
     posts_none?: Maybe<PostWhereInput>;
+    refreshToken?: Maybe<String>;
+    refreshToken_not?: Maybe<String>;
+    refreshToken_in?: Maybe<String[] | String>;
+    refreshToken_not_in?: Maybe<String[] | String>;
+    refreshToken_lt?: Maybe<String>;
+    refreshToken_lte?: Maybe<String>;
+    refreshToken_gt?: Maybe<String>;
+    refreshToken_gte?: Maybe<String>;
+    refreshToken_contains?: Maybe<String>;
+    refreshToken_not_contains?: Maybe<String>;
+    refreshToken_starts_with?: Maybe<String>;
+    refreshToken_not_starts_with?: Maybe<String>;
+    refreshToken_ends_with?: Maybe<String>;
+    refreshToken_not_ends_with?: Maybe<String>;
     createdAt?: Maybe<DateTimeInput>;
     createdAt_not?: Maybe<DateTimeInput>;
     createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
@@ -353,6 +369,7 @@ export interface UserCreateWithoutPostsInput {
     email: String;
     password: String;
     role?: Maybe<UserRole>;
+    refreshToken?: Maybe<String>;
 }
 
 export interface PostUpdateInput {
@@ -373,6 +390,7 @@ export interface UserUpdateWithoutPostsDataInput {
     email?: Maybe<String>;
     password?: Maybe<String>;
     role?: Maybe<UserRole>;
+    refreshToken?: Maybe<String>;
 }
 
 export interface UserUpsertWithoutPostsInput {
@@ -392,6 +410,7 @@ export interface UserCreateInput {
     password: String;
     role?: Maybe<UserRole>;
     posts?: Maybe<PostCreateManyWithoutAuthorInput>;
+    refreshToken?: Maybe<String>;
 }
 
 export interface PostCreateManyWithoutAuthorInput {
@@ -413,6 +432,7 @@ export interface UserUpdateInput {
     password?: Maybe<String>;
     role?: Maybe<UserRole>;
     posts?: Maybe<PostUpdateManyWithoutAuthorInput>;
+    refreshToken?: Maybe<String>;
 }
 
 export interface PostUpdateManyWithoutAuthorInput {
@@ -523,6 +543,7 @@ export interface UserUpdateManyMutationInput {
     email?: Maybe<String>;
     password?: Maybe<String>;
     role?: Maybe<UserRole>;
+    refreshToken?: Maybe<String>;
 }
 
 export interface PostSubscriptionWhereInput {
@@ -596,6 +617,7 @@ export interface User {
     email: String;
     password: String;
     role?: UserRole;
+    refreshToken?: String;
     createdAt: DateTimeOutput;
     updatedAt: DateTimeOutput;
 }
@@ -615,6 +637,7 @@ export interface UserPromise extends Promise<User>, Fragmentable {
         first?: Int;
         last?: Int;
     }) => T;
+    refreshToken: () => Promise<String>;
     createdAt: () => Promise<DateTimeOutput>;
     updatedAt: () => Promise<DateTimeOutput>;
 }
@@ -636,6 +659,7 @@ export interface UserSubscription
         first?: Int;
         last?: Int;
     }) => T;
+    refreshToken: () => Promise<AsyncIterator<String>>;
     createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
     updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
@@ -657,6 +681,7 @@ export interface UserNullablePromise
         first?: Int;
         last?: Int;
     }) => T;
+    refreshToken: () => Promise<String>;
     createdAt: () => Promise<DateTimeOutput>;
     updatedAt: () => Promise<DateTimeOutput>;
 }
@@ -892,6 +917,7 @@ export interface UserPreviousValues {
     email: String;
     password: String;
     role?: UserRole;
+    refreshToken?: String;
     createdAt: DateTimeOutput;
     updatedAt: DateTimeOutput;
 }
@@ -904,6 +930,7 @@ export interface UserPreviousValuesPromise
     email: () => Promise<String>;
     password: () => Promise<String>;
     role: () => Promise<UserRole>;
+    refreshToken: () => Promise<String>;
     createdAt: () => Promise<DateTimeOutput>;
     updatedAt: () => Promise<DateTimeOutput>;
 }
@@ -916,6 +943,7 @@ export interface UserPreviousValuesSubscription
     email: () => Promise<AsyncIterator<String>>;
     password: () => Promise<AsyncIterator<String>>;
     role: () => Promise<AsyncIterator<UserRole>>;
+    refreshToken: () => Promise<AsyncIterator<String>>;
     createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
     updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
 }

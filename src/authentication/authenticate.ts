@@ -1,4 +1,4 @@
-import { APP_SECRET } from '@utils/constants';
+import { ACCESS_TOKEN_SECRET } from '@utils/constants';
 import { Context } from '@utils/context';
 import { verify } from 'jsonwebtoken';
 import { AuthChecker } from 'type-graphql';
@@ -10,7 +10,7 @@ export const authenticationChecker: AuthChecker<Context> = async (
     const getAuthHeader = request.headers.authorization;
     if (getAuthHeader) {
         const token = getAuthHeader.replace('Bearer ', '');
-        const { userId, role }: any = verify(token, APP_SECRET);
+        const { userId, role }: any = verify(token, ACCESS_TOKEN_SECRET);
         if (role === 'ADMIN') {
             return true;
         }

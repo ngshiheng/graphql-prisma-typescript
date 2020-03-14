@@ -9,7 +9,13 @@ import {
     UserPaginationArgs,
     UserUpdateInput,
 } from '@entities/User.entity';
-import { APP_SECRET, SALT_ROUNDS, TOKEN_EXPIRY } from '@utils/constants';
+import {
+    ACCESS_TOKEN_EXPIRY,
+    ACCESS_TOKEN_SECRET,
+    REFRESH_TOKEN_EXPIRY,
+    REFRESH_TOKEN_SECRET,
+    SALT_ROUNDS,
+} from '@utils/constants';
 import { Context } from '@utils/context';
 import { sendPasswordResetEmail } from '@utils/mailer';
 import { compare, hash } from 'bcryptjs';
@@ -81,61 +87,47 @@ export class UserResolvers {
     }
 
     @Authorized('ADMIN')
-    @Mutation(() => AuthPayload)
+    @Mutation(() => User)
     async createUser(
         @Ctx() { prisma }: Context,
         @Arg('input', () => UserCreateInput)
         { email, password, role, name }: UserCreateInput,
-    ) {
+    ): Promise<Partial<Post>> {
         const userEmail = await prisma.user({ email });
         if (userEmail) {
             throw new Error('Email is already registered');
         }
         const hashedPassword = await hash(password, SALT_ROUNDS);
-        const user = await prisma.createUser({
+        return await prisma.createUser({
             name,
             role,
             email,
             password: hashedPassword,
         });
-        const token = sign({ userId: user.id, role: user.role }, APP_SECRET, {
-            expiresIn: TOKEN_EXPIRY,
-        });
-        return {
-            user,
-            token,
-        };
     }
 
-    @Mutation(() => AuthPayload)
+    @Mutation(() => User)
     async register(
         @Ctx() { prisma }: Context,
         @Args() { email, password, name }: UserAuthenticationArgs,
-    ) {
+    ): Promise<Partial<Post>> {
         const userEmail = await prisma.user({ email });
         if (userEmail) {
             throw new Error('Email is already registered');
         }
         const hashedPassword = await hash(password, 10);
-        const user = await prisma.createUser({
+        return await prisma.createUser({
             name,
             email,
             password: hashedPassword,
         });
-        const token = sign({ userId: user.id, role: user.role }, APP_SECRET, {
-            expiresIn: TOKEN_EXPIRY,
-        });
-        return {
-            user,
-            token,
-        };
     }
 
     @Mutation(() => AuthPayload)
     async login(
         @Ctx() { prisma }: Context,
         @Args() { email, password }: UserAuthenticationArgs,
-    ) {
+    ): Promise<AuthPayload> {
         const user = await prisma.user({ email });
         if (!user) {
             throw new Error('User does not exist'); // Note: Use ambiguous error message in production
@@ -144,12 +136,19 @@ export class UserResolvers {
         if (!isPasswordValid) {
             throw new Error('Incorrect password');
         }
-        const token = sign({ userId: user.id, role: user.role }, APP_SECRET, {
-            expiresIn: TOKEN_EXPIRY,
+        const token = sign(
+            { userId: user.id, role: user.role },
+            ACCESS_TOKEN_SECRET,
+            {
+                expiresIn: ACCESS_TOKEN_EXPIRY,
+            },
+        );
+        const refreshToken = sign({ userId: user.id }, REFRESH_TOKEN_SECRET, {
+            expiresIn: REFRESH_TOKEN_EXPIRY,
         });
         return {
             token,
-            user,
+            refreshToken,
         };
     }
 
@@ -194,12 +193,11 @@ export class UserResolvers {
         }
         const token = sign(
             { userEmail: email, currentPassword: user.password }, // Note: Change currentPassword to something less obvious in production
-            APP_SECRET,
+            ACCESS_TOKEN_SECRET,
             {
-                expiresIn: TOKEN_EXPIRY, // Note: Make this short-lived
+                expiresIn: ACCESS_TOKEN_EXPIRY, // Note: Make this short-lived
             },
         );
-        console.log(token);
         sendPasswordResetEmail(email, token);
         return {
             message: 'Password reset email sent. Please check your inbox',
@@ -216,9 +214,8 @@ export class UserResolvers {
             const token = getAuthHeader.replace('Bearer ', '');
             const { userEmail, currentPassword }: any = verify(
                 token,
-                APP_SECRET,
+                ACCESS_TOKEN_SECRET,
             );
-
             const user = await prisma.user({ email: userEmail });
             if (!user) {
                 throw new Error('User does not exist');

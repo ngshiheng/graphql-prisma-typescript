@@ -6,7 +6,7 @@ import {
     PostUpdateInput,
 } from '@entities/Post.entity';
 import { User } from '@entities/User.entity';
-import { APP_SECRET } from '@utils/constants';
+import { ACCESS_TOKEN_SECRET } from '@utils/constants';
 import { Context } from '@utils/context';
 import { verify } from 'jsonwebtoken';
 import {
@@ -80,14 +80,14 @@ export class PostResolvers {
         const getAuthHeader = request.headers.authorization;
         if (getAuthHeader) {
             const token = getAuthHeader.replace('Bearer ', '');
-            const { userId }: any = verify(token, APP_SECRET);
+            const { userId }: any = verify(token, ACCESS_TOKEN_SECRET);
             return await prisma.createPost({
                 author: { connect: { id: userId } },
                 title,
                 category,
             });
         }
-        throw new Error('You need to register for an account first');
+        throw new Error('An access token is required');
     }
 
     @Authorized('OWNER')

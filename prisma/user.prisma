@@ -5,6 +5,7 @@ type User {
     password: String!
     role: UserRole @default(value: USER)
     posts: [Post!]! @relation(name: "PostsByUser", onDelete: CASCADE)
+    refreshToken: String
     createdAt: DateTime! @createdAt
     updatedAt: DateTime! @updatedAt
 }

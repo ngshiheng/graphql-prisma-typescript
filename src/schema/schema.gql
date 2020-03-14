@@ -5,11 +5,11 @@
 
 """Authentication payload model"""
 type AuthPayload {
-  """Token that expires after a certain period of time"""
+  """Access token use to access protected resources"""
   token: String!
 
-  """User model"""
-  user: User!
+  """Token use to obtain the access token"""
+  refreshToken: String!
 }
 
 """Message payload"""
@@ -22,8 +22,8 @@ type Mutation {
   createPost(input: PostCreateInput!): Post!
   updatePost(input: PostUpdateInput!, id: String!): Post!
   deletePost(id: String!): Post!
-  createUser(input: UserCreateInput!): AuthPayload!
-  register(email: String!, password: String!, name: String): AuthPayload!
+  createUser(input: UserCreateInput!): User!
+  register(email: String!, password: String!, name: String): User!
   login(email: String!, password: String!, name: String): AuthPayload!
   updateUser(input: UserUpdateInput!, id: String!): User!
   deleteUser(id: String!): User!

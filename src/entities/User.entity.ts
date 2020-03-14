@@ -37,11 +37,11 @@ export class User {
 
 @ObjectType({ description: 'Authentication payload model' })
 export class AuthPayload {
-    @Field({ description: 'Token that expires after a certain period of time' })
+    @Field({ description: 'Access token use to access protected resources' })
     token: string;
 
-    @Field({ description: 'User model' })
-    user: User;
+    @Field({ description: 'Token use to obtain the access token' })
+    refreshToken: string;
 }
 
 @ObjectType({ description: 'Message payload' })

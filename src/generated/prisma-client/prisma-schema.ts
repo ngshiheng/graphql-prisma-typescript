@@ -381,6 +381,7 @@ export const typeDefs = /* GraphQL */ `
             first: Int
             last: Int
         ): [Post!]
+        refreshToken: String
         createdAt: DateTime!
         updatedAt: DateTime!
     }
@@ -398,6 +399,7 @@ export const typeDefs = /* GraphQL */ `
         password: String!
         role: UserRole
         posts: PostCreateManyWithoutAuthorInput
+        refreshToken: String
     }
 
     input UserCreateOneWithoutPostsInput {
@@ -411,6 +413,7 @@ export const typeDefs = /* GraphQL */ `
         email: String!
         password: String!
         role: UserRole
+        refreshToken: String
     }
 
     type UserEdge {
@@ -429,6 +432,8 @@ export const typeDefs = /* GraphQL */ `
         password_DESC
         role_ASC
         role_DESC
+        refreshToken_ASC
+        refreshToken_DESC
         createdAt_ASC
         createdAt_DESC
         updatedAt_ASC
@@ -441,6 +446,7 @@ export const typeDefs = /* GraphQL */ `
         email: String!
         password: String!
         role: UserRole
+        refreshToken: String
         createdAt: DateTime!
         updatedAt: DateTime!
     }
@@ -474,6 +480,7 @@ export const typeDefs = /* GraphQL */ `
         password: String
         role: UserRole
         posts: PostUpdateManyWithoutAuthorInput
+        refreshToken: String
     }
 
     input UserUpdateManyMutationInput {
@@ -481,6 +488,7 @@ export const typeDefs = /* GraphQL */ `
         email: String
         password: String
         role: UserRole
+        refreshToken: String
     }
 
     input UserUpdateOneRequiredWithoutPostsInput {
@@ -495,6 +503,7 @@ export const typeDefs = /* GraphQL */ `
         email: String
         password: String
         role: UserRole
+        refreshToken: String
     }
 
     input UserUpsertWithoutPostsInput {
@@ -566,6 +575,20 @@ export const typeDefs = /* GraphQL */ `
         posts_every: PostWhereInput
         posts_some: PostWhereInput
         posts_none: PostWhereInput
+        refreshToken: String
+        refreshToken_not: String
+        refreshToken_in: [String!]
+        refreshToken_not_in: [String!]
+        refreshToken_lt: String
+        refreshToken_lte: String
+        refreshToken_gt: String
+        refreshToken_gte: String
+        refreshToken_contains: String
+        refreshToken_not_contains: String
+        refreshToken_starts_with: String
+        refreshToken_not_starts_with: String
+        refreshToken_ends_with: String
+        refreshToken_not_ends_with: String
         createdAt: DateTime
         createdAt_not: DateTime
         createdAt_in: [DateTime!]
