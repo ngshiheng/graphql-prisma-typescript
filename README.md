@@ -26,12 +26,16 @@ A GraphQL, Prisma, TypeScript server boilerplate with authentication setup
 ## Setup environment variables
 
 ```bash
+export ACCESS_TOKEN_EXPIRY="15m"
+export ACCESS_TOKEN_SECRET="my-secret"
+export DUMMY_PASSWORD="my-secret"
 export ENDPOINT="/graphql"
-export EXPIRY="12h"
-export DUMMY_PASSWORD="my-super-secret-password"
-export PORT=4000
-export PRISMA_GQL_ENDPOINT="https://xxx.xxx.xxx"
-export SECRET="my-app-secret"
+export PORT="4000"
+export PRISMA_ENDPOINT="xxxx"
+export PRISMA_GQL_ENDPOINT="xxxx"
+export REFRESH_TOKEN_EXPIRY="7d"
+export REFRESH_TOKEN_SECRET="my-secret"
+
 ```
 
 ## Installing Prisma CLI
