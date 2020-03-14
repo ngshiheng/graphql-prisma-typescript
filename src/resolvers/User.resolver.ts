@@ -211,7 +211,7 @@ export class UserResolvers {
         @Ctx() { prisma, request }: Context,
         @Arg('password') password: string,
     ): Promise<MessagePayload> {
-        const getAuthHeader = request.get('Authorization');
+        const getAuthHeader = request.headers.authorization;
         if (getAuthHeader) {
             const token = getAuthHeader.replace('Bearer ', '');
             const { userEmail, currentPassword }: any = verify(

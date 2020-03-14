@@ -7,7 +7,7 @@ export const authenticationChecker: AuthChecker<Context> = async (
     { args, context: { request, prisma } },
     roles,
 ) => {
-    const getAuthHeader = request.get('Authorization');
+    const getAuthHeader = request.headers.authorization;
     if (getAuthHeader) {
         const token = getAuthHeader.replace('Bearer ', '');
         const { userId, role }: any = verify(token, APP_SECRET);

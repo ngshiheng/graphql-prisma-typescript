@@ -77,7 +77,7 @@ export class PostResolvers {
         @Arg('input', () => PostCreateInput)
         { title, category }: PostCreateInput,
     ): Promise<Partial<User>> {
-        const getAuthHeader = request.get('Authorization');
+        const getAuthHeader = request.headers.authorization;
         if (getAuthHeader) {
             const token = getAuthHeader.replace('Bearer ', '');
             const { userId }: any = verify(token, APP_SECRET);
