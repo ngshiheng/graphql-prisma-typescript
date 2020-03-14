@@ -1,10 +1,10 @@
 import { APP_SECRET } from '@utils/constants';
-import { Context } from 'graphql-yoga/dist/types';
+import { Context } from '@utils/context';
 import { verify } from 'jsonwebtoken';
 import { AuthChecker } from 'type-graphql';
 
-export const authenticationChecker: AuthChecker = async (
-    { args, context: { request, prisma } }: Context,
+export const authenticationChecker: AuthChecker<Context> = async (
+    { args, context: { request, prisma } },
     roles,
 ) => {
     const getAuthHeader = request.get('Authorization');

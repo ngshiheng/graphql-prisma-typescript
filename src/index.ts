@@ -7,15 +7,16 @@ import queryComplexity, {
     simpleEstimator,
 } from 'graphql-query-complexity';
 import { GraphQLServer } from 'graphql-yoga';
+import { Options } from 'graphql-yoga/dist/types';
+import { resolve } from 'path';
 import 'reflect-metadata';
 import { buildSchema } from 'type-graphql';
-import path = require('path');
 
 const main = async () => {
     const schema = await buildSchema({
         resolvers: [__dirname + '/resolvers/**/*.{ts,js}'],
         authChecker: authenticationChecker,
-        emitSchemaFile: path.resolve(__dirname, 'schema/schema.gql'),
+        emitSchemaFile: resolve(__dirname, 'schema/schema.gql'),
     });
 
     const server = new GraphQLServer({
@@ -50,7 +51,7 @@ const main = async () => {
                 ],
             }),
         ],
-    } as any;
+    } as Options;
 
     server.start(options, () =>
         console.log(
