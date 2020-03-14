@@ -24,7 +24,7 @@ type Mutation {
   deletePost(id: String!): Post!
   createUser(input: UserCreateInput!): AuthPayload!
   register(email: String!, password: String!, name: String): AuthPayload!
-  login(password: String!, email: String!): AuthPayload!
+  login(email: String!, password: String!, name: String): AuthPayload!
   updateUser(input: UserUpdateInput!, id: String!): User!
   deleteUser(id: String!): User!
   resetPassword(email: String!): MessagePayload!
@@ -125,9 +125,9 @@ input PostUpdateInput {
 
 type Query {
   post(id: String!): Post!
-  posts(orderBy: PostOrderByInput, last: Int, first: Int, before: String, after: String, skip: Int, filter: String): PostConnection!
+  posts(filter: String, skip: Int, after: String, before: String, first: Int, last: Int, orderBy: PostOrderByInput): PostConnection!
   user(id: String!): User!
-  users(orderBy: UserOrderByInput, last: Int, first: Int, before: String, after: String, skip: Int, filter: String): UserConnection!
+  users(filter: String, skip: Int, after: String, before: String, first: Int, last: Int, orderBy: UserOrderByInput): UserConnection!
 }
 
 """User model"""
@@ -145,7 +145,7 @@ type User {
   role: UserRole!
 
   """Posts authored by the user"""
-  posts(orderBy: PostOrderByInput, last: Int, first: Int, before: String, after: String, skip: Int, filter: String): PostConnection!
+  posts(filter: String, skip: Int, after: String, before: String, first: Int, last: Int, orderBy: PostOrderByInput): PostConnection!
 
   """Date of which the user is created"""
   createdAt: String!

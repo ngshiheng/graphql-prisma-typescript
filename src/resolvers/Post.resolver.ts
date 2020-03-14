@@ -2,7 +2,7 @@ import {
     Post,
     PostConnection,
     PostCreateInput,
-    PostOrderByInput,
+    PostPaginationArgs,
     PostUpdateInput,
 } from '@entities/Post.entity';
 import { User } from '@entities/User.entity';
@@ -11,10 +11,10 @@ import { Context } from '@utils/context';
 import { verify } from 'jsonwebtoken';
 import {
     Arg,
+    Args,
     Authorized,
     Ctx,
     FieldResolver,
-    Int,
     Mutation,
     Query,
     Resolver,
@@ -38,14 +38,16 @@ export class PostResolvers {
     @Query(() => PostConnection)
     async posts(
         @Ctx() { prisma }: Context,
-        @Arg('filter', { nullable: true }) filter: string,
-        @Arg('skip', () => Int, { nullable: true }) skip: number,
-        @Arg('after', { nullable: true }) after: string,
-        @Arg('before', { nullable: true }) before: string,
-        @Arg('first', () => Int, { nullable: true }) first: number,
-        @Arg('last', () => Int, { nullable: true }) last: number,
-        @Arg('orderBy', () => PostOrderByInput, { nullable: true })
-        orderBy: PostOrderByInput,
+        @Args()
+        {
+            filter,
+            skip,
+            after,
+            before,
+            first,
+            last,
+            orderBy,
+        }: PostPaginationArgs,
     ) {
         const where = filter ? { OR: [{ title_contains: filter }] } : {};
         const posts = await prisma.postsConnection({

@@ -1,11 +1,12 @@
-import { Post, PostOrderByInput } from '@entities/Post.entity';
+import { Post, PostPaginationArgs } from '@entities/Post.entity';
 import {
     AuthPayload,
     MessagePayload,
     User,
+    UserAuthenticationArgs,
     UserConnection,
     UserCreateInput,
-    UserOrderByInput,
+    UserPaginationArgs,
     UserUpdateInput,
 } from '@entities/User.entity';
 import { APP_SECRET, SALT_ROUNDS, TOKEN_EXPIRY } from '@utils/constants';
@@ -15,10 +16,10 @@ import { compare, hash } from 'bcryptjs';
 import { sign, verify } from 'jsonwebtoken';
 import {
     Arg,
+    Args,
     Authorized,
     Ctx,
     FieldResolver,
-    Int,
     Mutation,
     Query,
     Resolver,
@@ -42,16 +43,22 @@ export class UserResolvers {
     @Query(() => UserConnection)
     async users(
         @Ctx() { prisma }: Context,
-        @Arg('filter', { nullable: true }) filter: string,
-        @Arg('skip', () => Int, { nullable: true }) skip: number,
-        @Arg('after', { nullable: true }) after: string,
-        @Arg('before', { nullable: true }) before: string,
-        @Arg('first', () => Int, { nullable: true }) first: number,
-        @Arg('last', () => Int, { nullable: true }) last: number,
-        @Arg('orderBy', () => UserOrderByInput, { nullable: true })
-        orderBy: UserOrderByInput,
+        @Args()
+        {
+            filter,
+            skip,
+            after,
+            before,
+            first,
+            last,
+            orderBy,
+        }: UserPaginationArgs,
     ) {
-        const where = filter ? { OR: [{ email_contains: filter }] } : {};
+        const where = filter
+            ? {
+                  OR: [{ email_contains: filter }, { name_contains: filter }],
+              }
+            : {};
         const users = await prisma.usersConnection({
             where,
             skip,
@@ -103,9 +110,7 @@ export class UserResolvers {
     @Mutation(() => AuthPayload)
     async register(
         @Ctx() { prisma }: Context,
-        @Arg('name', { nullable: true }) name: string,
-        @Arg('password') password: string,
-        @Arg('email') email: string,
+        @Args() { email, password, name }: UserAuthenticationArgs,
     ) {
         const userEmail = await prisma.user({ email });
         if (userEmail) {
@@ -129,8 +134,7 @@ export class UserResolvers {
     @Mutation(() => AuthPayload)
     async login(
         @Ctx() { prisma }: Context,
-        @Arg('email') email: string,
-        @Arg('password') password: string,
+        @Args() { email, password }: UserAuthenticationArgs,
     ) {
         const user = await prisma.user({ email });
         if (!user) {
@@ -242,14 +246,16 @@ export class UserResolvers {
     async posts(
         @Ctx() { prisma }: Context,
         @Root() { id }: User,
-        @Arg('filter', { nullable: true }) filter: string,
-        @Arg('skip', () => Int, { nullable: true }) skip: number,
-        @Arg('after', { nullable: true }) after: string,
-        @Arg('before', { nullable: true }) before: string,
-        @Arg('first', () => Int, { nullable: true }) first: number,
-        @Arg('last', () => Int, { nullable: true }) last: number,
-        @Arg('orderBy', () => PostOrderByInput, { nullable: true })
-        orderBy: PostOrderByInput,
+        @Args()
+        {
+            filter,
+            skip,
+            after,
+            before,
+            first,
+            last,
+            orderBy,
+        }: PostPaginationArgs,
     ) {
         const where = filter
             ? { AND: [{ author: { id }, title_contains: filter }] }

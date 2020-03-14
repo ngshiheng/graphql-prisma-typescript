@@ -2,6 +2,7 @@ import { PageInfo } from '@entities/PageInfo';
 import { User } from '@entities/User.entity';
 import 'reflect-metadata';
 import {
+    ArgsType,
     Field,
     ID,
     InputType,
@@ -68,6 +69,30 @@ export class PostConnection {
 
     @Field(() => Int)
     totalCount: number;
+}
+
+@ArgsType()
+export class PostPaginationArgs {
+    @Field(() => String, { nullable: true })
+    filter?: string;
+
+    @Field(() => Int, { nullable: true })
+    skip?: number;
+
+    @Field(() => String, { nullable: true })
+    after?: string;
+
+    @Field(() => String, { nullable: true })
+    before?: string;
+
+    @Field(() => Int, { nullable: true })
+    first?: number;
+
+    @Field(() => Int, { nullable: true })
+    last?: number;
+
+    @Field(() => PostOrderByInput, { nullable: true })
+    orderBy?: PostOrderByInput;
 }
 
 export enum Category {

@@ -2,6 +2,7 @@ import { PageInfo } from '@entities/PageInfo';
 import { PostConnection } from '@entities/Post.entity';
 import 'reflect-metadata';
 import {
+    ArgsType,
     Field,
     ID,
     InputType,
@@ -92,6 +93,42 @@ export class UserConnection {
 
     @Field(() => Int)
     totalCount: number;
+}
+
+@ArgsType()
+export class UserAuthenticationArgs {
+    @Field(() => String)
+    email: string;
+
+    @Field(() => String)
+    password: string;
+
+    @Field(() => String, { nullable: true })
+    name?: string;
+}
+
+@ArgsType()
+export class UserPaginationArgs {
+    @Field(() => String, { nullable: true })
+    filter?: string;
+
+    @Field(() => Int, { nullable: true })
+    skip?: number;
+
+    @Field(() => String, { nullable: true })
+    after?: string;
+
+    @Field(() => String, { nullable: true })
+    before?: string;
+
+    @Field(() => Int, { nullable: true })
+    first?: number;
+
+    @Field(() => Int, { nullable: true })
+    last?: number;
+
+    @Field(() => UserOrderByInput, { nullable: true })
+    orderBy?: UserOrderByInput;
 }
 
 export enum UserRole {
