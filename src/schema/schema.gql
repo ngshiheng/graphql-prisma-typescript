@@ -9,7 +9,7 @@ type AuthPayload {
   token: String!
 
   """Token use to obtain the access token"""
-  refreshToken: String!
+  refreshToken: String
 }
 
 """Message payload"""

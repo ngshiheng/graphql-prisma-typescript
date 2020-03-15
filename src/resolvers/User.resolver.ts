@@ -150,7 +150,6 @@ export class UserResolvers {
             where: { email },
             data: { refreshToken },
         });
-
         return {
             token,
             refreshToken,
@@ -199,7 +198,7 @@ export class UserResolvers {
         // Note: Using currentPassword as a payload during password reset allows the password reset token to work as a single-use token
         const token = sign(
             { userEmail: email, currentPassword: user.password },
-            ACCESS_TOKEN_SECRET,
+            ACCESS_TOKEN_SECRET, // Note: Sign this with another secret in production
             {
                 expiresIn: ACCESS_TOKEN_EXPIRY,
             },
@@ -230,7 +229,7 @@ export class UserResolvers {
                 const hashedPassword = await hash(password, SALT_ROUNDS);
                 await prisma.updateUser({
                     where: { email: userEmail },
-                    data: { password: hashedPassword },
+                    data: { password: hashedPassword, refreshToken: null },
                 });
                 return {
                     message:

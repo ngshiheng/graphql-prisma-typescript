@@ -40,8 +40,11 @@ export class AuthPayload {
     @Field({ description: 'Access token use to access protected resources' })
     token: string;
 
-    @Field({ description: 'Token use to obtain the access token' })
-    refreshToken: string;
+    @Field({
+        nullable: true,
+        description: 'Token use to obtain the access token',
+    })
+    refreshToken?: string;
 }
 
 @ObjectType({ description: 'Message payload' })
