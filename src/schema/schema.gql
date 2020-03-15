@@ -29,6 +29,7 @@ type Mutation {
   deleteUser(id: String!): User!
   resetPassword(email: String!): MessagePayload!
   updatePassword(password: String!): MessagePayload!
+  refreshLogin(refreshToken: String!): AuthPayload!
 }
 
 type PageInfo {

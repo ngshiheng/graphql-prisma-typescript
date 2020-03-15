@@ -19,7 +19,7 @@ import {
 import { Context } from '@utils/context';
 import { sendPasswordResetEmail } from '@utils/mailer';
 import { compare, hash } from 'bcryptjs';
-import { sign, verify } from 'jsonwebtoken';
+import { decode, sign, verify } from 'jsonwebtoken';
 import {
     Arg,
     Args,
@@ -146,6 +146,11 @@ export class UserResolvers {
         const refreshToken = sign({ userId: user.id }, REFRESH_TOKEN_SECRET, {
             expiresIn: REFRESH_TOKEN_EXPIRY,
         });
+        await prisma.updateUser({
+            where: { email },
+            data: { refreshToken },
+        });
+
         return {
             token,
             refreshToken,
@@ -191,11 +196,12 @@ export class UserResolvers {
         if (!user) {
             throw new Error('User does not exist'); // Note: This should return the same message as sendPasswordResetEmail
         }
+        // Note: Using currentPassword as a payload during password reset allows the password reset token to work as a single-use token
         const token = sign(
-            { userEmail: email, currentPassword: user.password }, // Note: Change currentPassword to something less obvious in production
+            { userEmail: email, currentPassword: user.password },
             ACCESS_TOKEN_SECRET,
             {
-                expiresIn: ACCESS_TOKEN_EXPIRY, // Note: Make this short-lived
+                expiresIn: ACCESS_TOKEN_EXPIRY,
             },
         );
         sendPasswordResetEmail(email, token);
@@ -237,6 +243,56 @@ export class UserResolvers {
             }
         }
         throw new Error('Invalid token');
+    }
+
+    @Mutation(() => AuthPayload)
+    async refreshLogin(
+        @Ctx() { prisma, request }: Context,
+        @Arg('refreshToken') refreshToken: string,
+    ): Promise<AuthPayload> {
+        const getAuthHeader = request.headers.authorization;
+        if (getAuthHeader) {
+            const accessToken = getAuthHeader.replace('Bearer ', '');
+            const { userId }: any = decode(accessToken);
+            const user = await prisma.user({ id: userId });
+            if (user?.refreshToken === refreshToken) {
+                const isValid = verify(refreshToken, REFRESH_TOKEN_SECRET);
+                if (isValid) {
+                    const newAccessToken = sign(
+                        { userId, role: user.role },
+                        ACCESS_TOKEN_SECRET,
+                        {
+                            expiresIn: ACCESS_TOKEN_EXPIRY,
+                        },
+                    );
+                    // Note: Sending back a new refreshToken is optional
+                    const newRefreshToken = sign(
+                        { userId },
+                        REFRESH_TOKEN_SECRET,
+                        {
+                            expiresIn: REFRESH_TOKEN_EXPIRY,
+                        },
+                    );
+                    await prisma.updateUser({
+                        where: { id: userId },
+                        data: { refreshToken: newRefreshToken },
+                    });
+                    return {
+                        token: newAccessToken,
+                        refreshToken: newRefreshToken,
+                    };
+                } else {
+                    throw new Error(
+                        'Your refresh token has expired, please login again',
+                    );
+                }
+            } else {
+                throw new Error(
+                    'Your refresh token is invalid, please login again',
+                );
+            }
+        }
+        throw new Error('An access token is required');
     }
 
     @FieldResolver()
