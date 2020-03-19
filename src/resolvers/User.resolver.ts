@@ -221,24 +221,26 @@ export class UserResolvers {
                 token,
                 ACCESS_TOKEN_SECRET,
             );
-            const user = await prisma.user({ email: userEmail });
-            if (!user) {
-                throw new Error('User does not exist');
-            }
-            if (user.password === currentPassword) {
-                const hashedPassword = await hash(password, SALT_ROUNDS);
-                await prisma.updateUser({
-                    where: { email: userEmail },
-                    data: { password: hashedPassword, refreshToken: null },
-                });
-                return {
-                    message:
-                        'Password reset successful. You may now login with your new password',
-                };
-            } else {
-                throw new Error(
-                    'You may only reset your password once with the current token',
-                );
+            if (userEmail && currentPassword) {
+                const user = await prisma.user({ email: userEmail });
+                if (!user) {
+                    throw new Error('User does not exist');
+                }
+                if (user.password === currentPassword) {
+                    const hashedPassword = await hash(password, SALT_ROUNDS);
+                    await prisma.updateUser({
+                        where: { email: userEmail },
+                        data: { password: hashedPassword, refreshToken: null },
+                    });
+                    return {
+                        message:
+                            'Password reset successful. You may now login with your new password',
+                    };
+                } else {
+                    throw new Error(
+                        'You may only reset your password once with the current token',
+                    );
+                }
             }
         }
         throw new Error('Invalid token');
