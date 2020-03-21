@@ -22,9 +22,7 @@ export const DEFAULT_LOGIN_QUERY = `# Enter your email and password to login to 
 mutation {
     login(email: "", password: "") {
         token
-        user {
-            id
-        }
+        refreshToken
     }
 }
 

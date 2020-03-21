@@ -21,12 +21,10 @@ const main = async () => {
 
     const server = new GraphQLServer({
         schema,
-        context: request => {
-            return {
-                ...request,
-                prisma,
-            };
-        },
+        context: request => ({
+            ...request,
+            prisma,
+        }),
     });
 
     const options = {
