@@ -17,7 +17,7 @@ A GraphQL, Prisma, TypeScript server boilerplate with authentication setup
 
 -   [graphql-yoga](https://github.com/prisma-labs/graphql-yoga)
 -   [prisma](https://github.com/prisma/prisma)
--   [type-graphql](https://typegraphql.ml/)
+-   [type-graphql](https://typegraphql.com/)
 -   [typescript](https://www.typescriptlang.org/)
 -   [graphql-query-complexity](https://github.com/slicknode/graphql-query-complexity)
 

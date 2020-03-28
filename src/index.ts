@@ -21,7 +21,7 @@ const main = async () => {
 
     const server = new GraphQLServer({
         schema,
-        context: request => ({
+        context: (request) => ({
             ...request,
             prisma,
         }),

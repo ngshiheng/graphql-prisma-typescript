@@ -16,7 +16,7 @@ export const sendPasswordResetEmail = (email: string, token: string) => {
         subject: 'Request To Reset Password',
         text: `Attach this token to the authorization header when running updatePassword mutation: ${token}`,
     };
-    transporter.sendMail(message, error => {
+    transporter.sendMail(message, (error) => {
         if (error) {
             console.log(error);
             return error.message;
