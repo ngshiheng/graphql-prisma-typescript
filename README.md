@@ -11,7 +11,12 @@
 [![Build Status](https://travis-ci.org/ngshiheng/graphql-prisma-typescript.svg?branch=master)](https://travis-ci.org/ngshiheng/graphql-prisma-typescript)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/ngshiheng/graphql-prisma-typescript/blob/master/LICENSE)
 
-A GraphQL, Prisma, TypeScript server boilerplate with authentication setup
+A GraphQL, Prisma, TypeScript server boilerplate with:
+
+-   Basic User & Post relations
+-   Password reset feature
+-   [Relay style pagination](https://relay.dev/graphql/connections.htm)
+-   Code first approach with TypeGraphQL
 
 # Tech Stacks
 
@@ -75,3 +80,11 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 3. Commit your changes (`git commit -am 'Add some fooBar'`)
 4. Push to the branch (`git push origin feature/fooBar`)
 5. Create a new Pull Request
+
+# Prisma2 Version
+
+https://github.com/ngshiheng/graphql-prisma2-typescript
+
+# Donating
+
+<a href="https://www.buymeacoffee.com/jerryng" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-black.png" alt="Buy Me A Coffee" style="height: 51px !important;width: 217px !important;"></a>
