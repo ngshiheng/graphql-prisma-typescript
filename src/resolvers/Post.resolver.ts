@@ -6,9 +6,8 @@ import {
     PostUpdateInput,
 } from '@entities/Post.entity';
 import { User } from '@entities/User.entity';
-import { ACCESS_TOKEN_SECRET } from '@utils/constants';
-import { Context } from '@utils/context';
-import { verify } from 'jsonwebtoken';
+import { getUserId, Session } from '@src/authentication/authenticate';
+import { Context } from '@src/index';
 import {
     Arg,
     Args,
@@ -39,25 +38,12 @@ export class PostResolvers {
     async posts(
         @Ctx() { prisma }: Context,
         @Args()
-        {
-            filter,
-            skip,
-            after,
-            before,
-            first,
-            last,
-            orderBy,
-        }: PostPaginationArgs,
+        { filter, ...args }: PostPaginationArgs,
     ) {
         const where = filter ? { OR: [{ title_contains: filter }] } : {};
         const posts = await prisma.postsConnection({
             where,
-            skip,
-            after,
-            before,
-            first,
-            last,
-            orderBy,
+            ...args,
         });
         const totalCount = await prisma
             .postsConnection({ where })
@@ -77,17 +63,12 @@ export class PostResolvers {
         @Arg('input', () => PostCreateInput)
         { title, category }: PostCreateInput,
     ): Promise<Partial<User>> {
-        const getAuthHeader = request.headers.authorization;
-        if (getAuthHeader) {
-            const token = getAuthHeader.replace('Bearer ', '');
-            const { userId }: any = verify(token, ACCESS_TOKEN_SECRET);
-            return await prisma.createPost({
-                author: { connect: { id: userId } },
-                title,
-                category,
-            });
-        }
-        throw new Error('An access token is required');
+        const { userId }: Session = await getUserId({ prisma, request });
+        return await prisma.createPost({
+            author: { connect: { id: userId } },
+            title,
+            category,
+        });
     }
 
     @Authorized('OWNER')

@@ -23,6 +23,7 @@
         "skipLibCheck": true,
         "baseUrl": "./src",
         "paths": {
+            "@src/*": ["./*"],
             "@authentication/*": ["authentication/*"],
             "@entities/*": ["entities/*"],
             "@generated/*": ["generated/*"],

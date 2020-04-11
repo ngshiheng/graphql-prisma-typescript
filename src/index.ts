@@ -1,6 +1,7 @@
 import { authenticationChecker } from '@authentication/authenticate';
-import { prisma } from '@generated/prisma-client';
+import { prisma, Prisma } from '@generated/prisma-client';
 import { DEFAULT_LOGIN_QUERY, MAXIMUM_COMPLEXITY } from '@utils/constants';
+import { Request } from 'express';
 import { GraphQLError } from 'graphql';
 import queryComplexity, {
     fieldExtensionsEstimator,
@@ -12,6 +13,11 @@ import { resolve } from 'path';
 import 'reflect-metadata';
 import { buildSchema } from 'type-graphql';
 
+export interface Context {
+    prisma: Prisma;
+    request: Request;
+}
+
 const main = async () => {
     const schema = await buildSchema({
         resolvers: [__dirname + '/resolvers/**/*.{ts,js}'],
@@ -21,10 +27,11 @@ const main = async () => {
 
     const server = new GraphQLServer({
         schema,
-        context: (request) => ({
-            ...request,
-            prisma,
-        }),
+        context: (request) =>
+            ({
+                ...request,
+                prisma,
+            } as Context),
     });
 
     const options = {

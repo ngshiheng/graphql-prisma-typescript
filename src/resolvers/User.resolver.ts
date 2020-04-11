@@ -9,6 +9,7 @@ import {
     UserPaginationArgs,
     UserUpdateInput,
 } from '@entities/User.entity';
+import { Context } from '@src/index';
 import {
     ACCESS_TOKEN_EXPIRY,
     ACCESS_TOKEN_SECRET,
@@ -16,7 +17,6 @@ import {
     REFRESH_TOKEN_SECRET,
     SALT_ROUNDS,
 } from '@utils/constants';
-import { Context } from '@utils/context';
 import { sendPasswordResetEmail } from '@utils/mailer';
 import { compare, hash } from 'bcryptjs';
 import { decode, sign, verify } from 'jsonwebtoken';
@@ -50,15 +50,7 @@ export class UserResolvers {
     async users(
         @Ctx() { prisma }: Context,
         @Args()
-        {
-            filter,
-            skip,
-            after,
-            before,
-            first,
-            last,
-            orderBy,
-        }: UserPaginationArgs,
+        { filter, ...args }: UserPaginationArgs,
     ) {
         const where = filter
             ? {
@@ -67,12 +59,7 @@ export class UserResolvers {
             : {};
         const users = await prisma.usersConnection({
             where,
-            skip,
-            after,
-            before,
-            first,
-            last,
-            orderBy,
+            ...args,
         });
         const totalCount = await prisma
             .usersConnection({ where })
@@ -301,27 +288,14 @@ export class UserResolvers {
         @Ctx() { prisma }: Context,
         @Root() { id }: User,
         @Args()
-        {
-            filter,
-            skip,
-            after,
-            before,
-            first,
-            last,
-            orderBy,
-        }: PostPaginationArgs,
+        { filter, ...args }: PostPaginationArgs,
     ) {
         const where = filter
             ? { AND: [{ author: { id }, title_contains: filter }] }
             : { author: { id } };
         const posts = await prisma.postsConnection({
             where,
-            skip,
-            after,
-            before,
-            first,
-            last,
-            orderBy,
+            ...args,
         });
         const totalCount = await prisma
             .postsConnection({ where })
