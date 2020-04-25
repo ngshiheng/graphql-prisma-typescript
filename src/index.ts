@@ -23,6 +23,7 @@ const main = async () => {
         resolvers: [__dirname + '/resolvers/**/*.{ts,js}'],
         authChecker: authenticationChecker,
         emitSchemaFile: resolve(__dirname, 'schema/schema.gql'),
+        validate: false,
     });
 
     const server = new GraphQLServer({
